@@ -1,7 +1,7 @@
 ---
 name: sonnet-worker
 description: Investigates the codebase, implements changes, runs commands, and reports literal verified results.
-model: deepseek/deepseek-v4-flash-0731
+model: sonnet
 tools: Read, Glob, Grep, Edit, Write, Bash, LSP
 permissionMode: acceptEdits
 ---
