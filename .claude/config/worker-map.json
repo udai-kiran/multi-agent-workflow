@@ -14,7 +14,8 @@
       "supports_persona": true,
       "env": {
         "PI_WORKER_MODEL": "openrouter/moonshotai/kimi-k3",
-        "PI_WORKER_NAME": "pi-kimi"
+        "PI_WORKER_NAME": "pi-kimi",
+        "PI_WORKER_THINKING": "high"
       }
     },
     "pi-glm": {
@@ -24,7 +25,8 @@
       "supports_persona": true,
       "env": {
         "PI_WORKER_MODEL": "openrouter/z-ai/glm-5.3-flash",
-        "PI_WORKER_NAME": "pi-glm"
+        "PI_WORKER_NAME": "pi-glm",
+        "PI_WORKER_THINKING": "high"
       }
     },
     "codex": {
