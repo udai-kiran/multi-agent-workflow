@@ -16,6 +16,10 @@
 #   worker-log    → git
 #   all workers   → git (repo root detection)
 #
+# Claude Code tool backends:
+#   Grep tool     → rg  (ripgrep)
+#   Glob tool     → fd  (fd-find)
+#
 # Claude Code itself → claude
 set -euo pipefail
 
@@ -64,6 +68,12 @@ check_bin "pi"    required  "pi-worker: runs 'pi --no-session --model …'" \
 check_bin "codex" required  "codex-worker and codex-reviewer: runs 'codex exec …'" \
     || (( missing_required++ )) || true
 
+check_bin "rg"    required  "Claude Code Grep tool backend (ripgrep)" \
+    || (( missing_required++ )) || true
+
+check_bin "fd"    required  "Claude Code Glob tool backend (fd-find)" \
+    || (( missing_required++ )) || true
+
 # ── optional / strongly recommended ──────────────────────────────────────────
 
 echo ""
@@ -86,5 +96,7 @@ else
     echo "  npx   — ships with Node.js: https://nodejs.org" >&2
     echo "  pi    — npm install -g @earendil-works/pi-coding-agent" >&2
     echo "  codex — npm install -g @openai/codex  (or follow https://github.com/openai/codex)" >&2
+    echo "  rg    — https://github.com/BurntSushi/ripgrep#installation" >&2
+    echo "  fd    — https://github.com/sharkdp/fd#installation" >&2
     exit 1
 fi
