@@ -19,11 +19,11 @@
     },
     "pi-glm": {
       "bin": "pi-worker",
-      "model": "opencode/glm-5.3",
-      "provider": "opencode",
+      "model": "openrouter/z-ai/glm-5.3-flash",
+      "provider": "openrouter",
       "supports_persona": true,
       "env": {
-        "PI_WORKER_MODEL": "opencode/glm-5.3",
+        "PI_WORKER_MODEL": "openrouter/z-ai/glm-5.3-flash",
         "PI_WORKER_NAME": "pi-glm"
       }
     },
