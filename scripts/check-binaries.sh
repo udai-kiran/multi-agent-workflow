@@ -8,10 +8,7 @@
 #   1  one or more required binaries missing
 #
 # Workers and the binaries they need:
-#   dsh-worker    → npx (invokes `npx @deepseek-ai/dsh`)
 #   pi-worker     → pi  (npm global: @earendil-works/pi-coding-agent)
-#   codex-worker  → codex
-#   codex-reviewer→ codex
 #   worker-stats  → awk, git
 #   worker-log    → git
 #   all workers   → git (repo root detection)
@@ -59,13 +56,7 @@ echo ""
 check_bin "git"   required  "repo root detection used by every worker bin" \
     || (( missing_required++ )) || true
 
-check_bin "npx"   required  "dsh-worker: runs 'npx @deepseek-ai/dsh'" \
-    || (( missing_required++ )) || true
-
 check_bin "pi"    required  "pi-worker: runs 'pi --no-session --model …'" \
-    || (( missing_required++ )) || true
-
-check_bin "codex" required  "codex-worker and codex-reviewer: runs 'codex exec …'" \
     || (( missing_required++ )) || true
 
 check_bin "rg"    required  "Claude Code Grep tool backend (ripgrep)" \
@@ -78,10 +69,12 @@ check_bin "fd"    required  "Claude Code Glob tool backend (fd-find)" \
 
 echo ""
 
-check_bin "claude" optional "Claude Code CLI (the coordinator agent host)"
-check_bin "node"   optional "Node.js runtime (required by npx / dsh)"
-check_bin "awk"    optional "worker-stats report generation"
-check_bin "jq"     optional "JSON wrangling in hook scripts"
+check_bin "npx"   optional "dsh-worker: runs npx @deepseek-ai/dsh (not currently needed)" || true
+check_bin "codex" optional "codex-worker and codex-reviewer (not currently needed)" || true
+check_bin "claude" optional "Claude Code CLI (the coordinator agent host)" || true
+check_bin "node"   optional "Node.js runtime (required by npx / dsh)" || true
+check_bin "awk"    optional "worker-stats report generation" || true
+check_bin "jq"     optional "JSON wrangling in hook scripts" || true
 
 # ── summary ───────────────────────────────────────────────────────────────────
 
@@ -93,9 +86,7 @@ else
     printf '\033[31m%d required binary/binaries missing.\033[0m\n' "$missing_required" >&2
     echo "" >&2
     echo "Install hints:" >&2
-    echo "  npx   — ships with Node.js: https://nodejs.org" >&2
     echo "  pi    — npm install -g @earendil-works/pi-coding-agent" >&2
-    echo "  codex — npm install -g @openai/codex  (or follow https://github.com/openai/codex)" >&2
     echo "  rg    — https://github.com/BurntSushi/ripgrep#installation" >&2
     echo "  fd    — https://github.com/sharkdp/fd#installation" >&2
     exit 1
