@@ -1,0 +1,4 @@
+# Claude Code private state — never commit
+.claude/.credentials.json
+.claude/.claude.json
+.claude/.last-*
