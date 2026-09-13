@@ -7,7 +7,7 @@ input=$(cat)
 tool=$(printf '%s' "$input" | jq -r '.tool_name // "unknown"')
 error=$(printf '%s' "$input" | jq -r '.tool_response.error // .tool_response.stderr // ""' | head -c 200)
 
-LOG="$HOME/.claude/hook-logs/tool-failures.jsonl"
+LOG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hook-logs/tool-failures.jsonl"
 mkdir -p "$(dirname "$LOG")"
 
 timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")

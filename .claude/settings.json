@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/bash-guard.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/bash-guard.sh",
             "timeout": 5,
             "statusMessage": "Safety check..."
           }
@@ -22,13 +22,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/format-on-save.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/format-on-save.sh",
             "timeout": 30,
             "statusMessage": "Formatting..."
           },
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/security-scan.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/security-scan.sh",
             "timeout": 15,
             "statusMessage": "Security scan..."
           }
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/test-watcher.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/test-watcher.sh",
             "timeout": 5,
             "statusMessage": "Checking test results..."
           }
@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/pre-compact.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/pre-compact.sh",
             "timeout": 5,
             "statusMessage": "Saving context..."
           }
@@ -63,7 +63,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/prompt-log.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/prompt-log.sh",
             "timeout": 3
           }
         ]
@@ -74,7 +74,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/stop-check.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/stop-check.sh",
             "timeout": 5
           }
         ]
@@ -85,7 +85,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/session-start.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/session-start.sh",
             "timeout": 5
           }
         ]
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/session-end.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/session-end.sh",
             "timeout": 5,
             "once": true
           }
@@ -108,7 +108,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/post-compact.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/post-compact.sh",
             "timeout": 5,
             "statusMessage": "Verifying post-compact state..."
           }
@@ -120,7 +120,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/tool-failure.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/tool-failure.sh",
             "timeout": 5
           }
         ]
@@ -131,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/subagent-stop.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/subagent-stop.sh",
             "timeout": 5
           }
         ]
@@ -143,7 +143,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_CONFIG_DIR/hooks/env-changed.sh",
+            "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hooks/env-changed.sh",
             "timeout": 5,
             "statusMessage": "Env file changed..."
           }
@@ -153,12 +153,12 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "~/.claude/statusline.sh",
+    "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/statusline.sh",
     "padding": 0
   },
   "subagentStatusLine": {
     "type": "command",
-    "command": "~/.claude/subagent-statusline.sh"
+    "command": "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/subagent-statusline.sh"
   },
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
@@ -168,8 +168,7 @@
     "clangd-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true
   },
-  "extraKnownMarketplaces": {
-  },
+  "extraKnownMarketplaces": {},
   "effortLevel": "high",
   "advisorModel": "fable",
   "tui": "fullscreen",

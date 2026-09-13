@@ -175,6 +175,19 @@ pi_status=0
     -- "${persona_text}${prompt}${prompt_guard}") \
     > "$report_file" < /dev/null || pi_status=$?
 
+# ── post-run: format files the worker touched ───────────────────────────────
+_fmt="$repo_root/.claude/bin/format-file"
+if [[ -x "$_fmt" ]]; then
+  while IFS= read -r _f; do
+    [[ -n "$_f" && -f "$repo_root/$_f" ]] && "$_fmt" "$repo_root/$_f" 2>/dev/null || true
+  done < <(cd "$repo_root" && {
+    git diff --name-only
+    git ls-files --others --exclude-standard
+  } 2>/dev/null | sort -u)
+  unset _f
+fi
+unset _fmt
+
 if [[ ! -s "$report_file" ]]; then
     echo "error: pi produced no report (exit $pi_status); nothing written to $dest" >&2
     [[ $pi_status -eq 0 ]] && pi_status=1
