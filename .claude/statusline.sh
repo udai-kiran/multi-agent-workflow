@@ -52,7 +52,7 @@ dir_name=$(basename "$cur_dir")
 # account out-of-band. Same value for every session on this machine.
 acct=""
 org=""
-acct_file="$HOME/.claude.json"
+acct_file="$(dirname "${CLAUDE_CONFIG_DIR:-$HOME/.claude}")/.claude.json"
 if [ -f "$acct_file" ]; then
   mapfile -t A < <(jq -r '.oauthAccount // {} | [ .emailAddress // "", .organizationName // "" ] | .[]' "$acct_file" 2>/dev/null)
   acct=${A[0]}

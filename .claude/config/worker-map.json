@@ -1,12 +1,5 @@
 {
   "workers": {
-    "dsh": {
-      "bin": "dsh-worker",
-      "model": "deepseek-flash (profile-managed)",
-      "provider": "deepseek-official",
-      "supports_persona": true,
-      "env": {}
-    },
     "pi-kimi": {
       "bin": "pi-worker",
       "model": "openrouter/moonshotai/kimi-k3",
@@ -29,6 +22,28 @@
         "PI_WORKER_THINKING": "high"
       }
     },
+    "pi-deepseek": {
+      "bin": "pi-worker",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "provider": "deepseek",
+      "supports_persona": true,
+      "env": {
+        "PI_WORKER_MODEL": "deepseek/deepseek-v4-flash-0731",
+        "PI_WORKER_NAME": "pi-deepseek",
+        "PI_WORKER_THINKING": "high"
+      }
+    },
+    "pi-grok": {
+      "bin": "pi-worker",
+      "model": "x-ai/grok-4.6",
+      "provider": "x-ai",
+      "supports_persona": true,
+      "env": {
+        "PI_WORKER_MODEL": "x-ai/grok-4.6",
+        "PI_WORKER_NAME": "pi-grok",
+        "PI_WORKER_THINKING": "high"
+      }
+    },
     "codex": {
       "bin": "codex-worker",
       "model": "gpt-5.6-terra",
@@ -39,9 +54,10 @@
   },
   "selection": {
     "cold_start_order": [
-      "dsh",
       "pi-kimi",
-      "pi-glm"
+      "pi-glm",
+      "pi-deepseek",
+      "pi-grok"
     ],
     "min_samples": 5,
     "min_pass_rate": 0.70,

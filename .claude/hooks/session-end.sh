@@ -3,7 +3,7 @@ set -euo pipefail
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config/hook-utils.sh"
 is_hook_disabled "disableSessionEnd" && exit 0
 
-LOG="$HOME/.claude/hook-logs/sessions.jsonl"
+LOG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hook-logs/sessions.jsonl"
 mkdir -p "$(dirname "$LOG")"
 
 timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")

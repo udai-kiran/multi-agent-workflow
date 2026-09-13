@@ -26,7 +26,7 @@ is_hook_disabled() {
   fi
 
   # JSON config check: ~/.claude/hook-config.json
-  local cfg="$HOME/.claude/hook-config.json"
+  local cfg="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/hook-config.json"
   if [ -f "$cfg" ] && command -v jq >/dev/null 2>&1; then
     local val
     val=$(jq -r --arg k "$key" '.[$k] // false' "$cfg" 2>/dev/null || echo "false")
