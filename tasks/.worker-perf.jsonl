@@ -1,12 +1,8 @@
-{"worker":"dsh","model":"deepseek-flash","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-dsh.md","exit":0,"duration_s":91,"ts":"2026-09-11T13:56:59Z"}
 {"worker":"codex","model":"gpt-5.6-terra","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-codex.md","exit":0,"duration_s":24,"ts":"2026-09-11T13:57:29Z"}
 {"worker":"pi-kimi","model":"openrouter/moonshotai/kimi-k3","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-pi-kimi.md","exit":0,"duration_s":27,"ts":"2026-09-11T14:05:48Z"}
 {"worker":"pi-glm","model":"openrouter/z-ai/glm-5.3-flash","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-pi-glm.md","exit":0,"duration_s":6,"ts":"2026-09-11T14:09:09Z"}
-{"worker":"dsh","model":"deepseek-flash","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-dsh-2.md","exit":0,"duration_s":14,"ts":"2026-09-11T14:13:16Z"}
 {"worker":"pi-kimi","model":"openrouter/moonshotai/kimi-k3","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-pi-kimi-2.md","exit":0,"duration_s":11,"ts":"2026-09-11T14:13:29Z"}
 {"worker":"pi-glm","model":"openrouter/z-ai/glm-5.3-flash","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-pi-glm-2.md","exit":0,"duration_s":7,"ts":"2026-09-11T14:13:38Z"}
 {"worker":"codex","model":"gpt-5.6-terra","report":"/work/personal/multi-agent-workflow/tasks/smoke-test/implementation-codex-2.md","exit":0,"duration_s":21,"ts":"2026-09-11T14:14:01Z"}
-{"worker":"pi-deepseek","model":"deepseek/deepseek-v4-flash-0731","report":"/home/udai/personal/multi-agent-workflow/tasks/check-binaries-trim/implementation-1.md","exit":0,"duration_s":26,"ts":"2026-09-13T06:58:05Z"}
 {"worker":"pi-grok","model":"x-ai/grok-4.6","report":"/home/udai/personal/multi-agent-workflow/tasks/format-file/implementation-1.md","exit":0,"duration_s":23,"ts":"2026-09-13T07:18:30Z"}
-{"worker":"pi-deepseek","model":"deepseek/deepseek-v4-flash-0731","report":"/home/udai/personal/multi-agent-workflow/tasks/format-file/implementation-2.md","exit":0,"duration_s":95,"ts":"2026-09-13T07:20:07Z"}
 {"worker":"pi-kimi","model":"openrouter/moonshotai/kimi-k3","report":"/home/udai/personal/multi-agent-workflow/tasks/format-file/implementation-3.md","exit":0,"duration_s":29,"ts":"2026-09-13T07:20:39Z"}

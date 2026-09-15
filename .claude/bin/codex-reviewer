@@ -14,7 +14,7 @@ fi
 repo_root="$(git rev-parse --show-toplevel)"
 
 # Write review output into tasks/ at the repo root — the same directory
-# dsh-worker and codex-worker use for their reports.
+# pi-worker and codex-worker use for their reports.
 task_dir="$repo_root/tasks"
 mkdir -p "$task_dir"
 report_file="$(mktemp "$task_dir/codex-review.XXXXXX.md")"

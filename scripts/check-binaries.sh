@@ -7,17 +7,10 @@
 #   0  all required binaries found
 #   1  one or more required binaries missing
 #
-# Workers and the binaries they need:
-#   pi-worker     → pi  (npm global: @earendil-works/pi-coding-agent)
-#   worker-stats  → awk, git
-#   worker-log    → git
-#   all workers   → git (repo root detection)
-#
-# Claude Code tool backends:
-#   Grep tool     → rg  (ripgrep)
-#   Glob tool     → fd  (fd-find)
-#
-# Claude Code itself → claude
+# Required binaries:
+#   pi  → pi-worker (npm global: @earendil-works/pi-coding-agent)
+#   rg  → Claude Code Grep tool backend (ripgrep)
+#   fd  → Claude Code Glob tool backend (fd-find)
 set -euo pipefail
 
 QUIET=0
@@ -25,11 +18,10 @@ QUIET=0
 
 pass() { [[ $QUIET -eq 1 ]] || printf '  \033[32m✓\033[0m %-18s %s\n' "$1" "$2"; }
 fail() { printf '  \033[31m✗\033[0m %-18s %s\n' "$1" "$2" >&2; }
-note() { [[ $QUIET -eq 1 ]] || printf '  \033[33m~\033[0m %-18s %s\n' "$1" "$2"; }
 
 check_bin() {
-  # check_bin <name> <required|optional> <description>
-  local name="$1" kind="$2" desc="$3"
+  # check_bin <name> <description>
+  local name="$1" desc="$2"
   if command -v "$name" >/dev/null 2>&1; then
     local ver
     # Best-effort version string — silence errors for tools that don't support --version
@@ -37,11 +29,7 @@ check_bin() {
     pass "$name" "${ver:-(found)}  — $desc"
     return 0
   else
-    if [[ "$kind" == "required" ]]; then
-      fail "$name" "NOT FOUND  — $desc"
-    else
-      note "$name" "not found (optional)  — $desc"
-    fi
+    fail "$name" "NOT FOUND  — $desc"
     return 1
   fi
 }
@@ -53,28 +41,14 @@ echo ""
 
 # ── required ─────────────────────────────────────────────────────────────────
 
-check_bin "git" required "repo root detection used by every worker bin" ||
+check_bin "pi" "pi-worker: runs 'pi --no-session --model …'" ||
   ((missing_required++)) || true
 
-check_bin "pi" required "pi-worker: runs 'pi --no-session --model …'" ||
+check_bin "rg" "Claude Code Grep tool backend (ripgrep)" ||
   ((missing_required++)) || true
 
-check_bin "rg" required "Claude Code Grep tool backend (ripgrep)" ||
+check_bin "fd" "Claude Code Glob tool backend (fd-find)" ||
   ((missing_required++)) || true
-
-check_bin "fd" required "Claude Code Glob tool backend (fd-find)" ||
-  ((missing_required++)) || true
-
-# ── optional / strongly recommended ──────────────────────────────────────────
-
-echo ""
-
-check_bin "npx" optional "dsh-worker: runs npx @deepseek-ai/dsh (not currently needed)" || true
-check_bin "codex" optional "codex-worker and codex-reviewer (not currently needed)" || true
-check_bin "claude" optional "Claude Code CLI (the coordinator agent host)" || true
-check_bin "node" optional "Node.js runtime (required by npx / dsh)" || true
-check_bin "awk" optional "worker-stats report generation" || true
-check_bin "jq" optional "JSON wrangling in hook scripts" || true
 
 # ── summary ───────────────────────────────────────────────────────────────────
 

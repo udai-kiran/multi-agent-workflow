@@ -13,33 +13,33 @@
     },
     "pi-glm": {
       "bin": "pi-worker",
-      "model": "openrouter/z-ai/glm-5.3-flash",
+      "model": "openrouter/z-ai/glm-5.3",
       "provider": "openrouter",
       "supports_persona": true,
       "env": {
-        "PI_WORKER_MODEL": "openrouter/z-ai/glm-5.3-flash",
+        "PI_WORKER_MODEL": "openrouter/z-ai/glm-5.3",
         "PI_WORKER_NAME": "pi-glm",
         "PI_WORKER_THINKING": "high"
       }
     },
-    "pi-deepseek": {
+    "pi-dsh": {
       "bin": "pi-worker",
-      "model": "deepseek/deepseek-v4-flash-0731",
-      "provider": "deepseek",
+      "model": "openrouter/~deepseek/deepseek-v4-flash-latest",
+      "provider": "openrouter",
       "supports_persona": true,
       "env": {
-        "PI_WORKER_MODEL": "deepseek/deepseek-v4-flash-0731",
-        "PI_WORKER_NAME": "pi-deepseek",
+        "PI_WORKER_MODEL": "openrouter/~deepseek/deepseek-v4-flash-latest",
+        "PI_WORKER_NAME": "pi-dsh",
         "PI_WORKER_THINKING": "high"
       }
     },
     "pi-grok": {
       "bin": "pi-worker",
-      "model": "x-ai/grok-4.6",
-      "provider": "x-ai",
+      "model": "openrouter/x-ai/grok-4.6",
+      "provider": "openrouter",
       "supports_persona": true,
       "env": {
-        "PI_WORKER_MODEL": "x-ai/grok-4.6",
+        "PI_WORKER_MODEL": "openrouter/x-ai/grok-4.6",
         "PI_WORKER_NAME": "pi-grok",
         "PI_WORKER_THINKING": "high"
       }
@@ -56,7 +56,7 @@
     "cold_start_order": [
       "pi-kimi",
       "pi-glm",
-      "pi-deepseek",
+      "pi-dsh",
       "pi-grok"
     ],
     "min_samples": 5,

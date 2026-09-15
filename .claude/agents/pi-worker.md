@@ -24,8 +24,8 @@ information:
 The wrapper script reads two environment variables the coordinator may set:
 `PI_WORKER_MODEL` (default: `openrouter/moonshotai/kimi-k3`),
 `PI_WORKER_THINKING` (default: `high`), and `PI_WORKER_NAME` (default: `pi`;
-set to `pi-kimi` or `pi-glm` to match the worker-map entry for correct
-performance tracking).
+set to the worker-map entry name — `pi-kimi`, `pi-glm`, `pi-dsh`, or
+`pi-grok` — for correct performance tracking).
 
 ## What you do
 
