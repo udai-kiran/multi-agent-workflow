@@ -37,12 +37,28 @@ highest-rate worker; break ties by `cold_start_order` position. Check
 `overrides` for task-pattern matches before auto-selecting. The fallback
 (for any external worker failure) is always `sonnet-worker`.
 
+**Current worker roster** (authoritative source is always `.claude/config/worker-map.json`):
+
+| Worker | Bin | Model | Notes |
+|--------|-----|-------|-------|
+| `pi` | `pi-worker` | `openrouter/deepseek/deepseek-flash-latest` | 1st cold-start |
+| `pi-glm` | `pi-worker` | `openrouter/z-ai/glm-5.3-flash` | 2nd cold-start |
+| `pi-kimi` | `pi-worker` | `openrouter/moonshotai/kimi-k3` | 3rd cold-start |
+| `pi-grok` | `pi-worker` | `openrouter/x-ai/grok-4.6` | 4th cold-start |
+| `codex` | `codex-worker` | `gpt-5.6-terra` | 5th cold-start; also used for final review |
+| `sonnet-worker` | subagent | Claude Sonnet | fallback + verify only |
+
 Invoke the selected worker's bin script via a `Bash` tool call with
 `timeout: 600000`:
 
+**pi-worker** (workers: `pi`, `pi-glm`, `pi-kimi`, `pi-grok`) — requires env vars from the worker-map `env` block:
 ```bash
-# Set the model env vars from the worker-map entry, then invoke:
-PI_WORKER_MODEL="openrouter/z-ai/glm-5.3" PI_WORKER_NAME="pi-glm" "$(git rev-parse --show-toplevel)/.claude/bin/pi-worker" <report-path> '<task prompt>'
+PI_WORKER_MODEL="openrouter/deepseek/deepseek-flash-latest" PI_WORKER_NAME="pi" "$(git rev-parse --show-toplevel)/.claude/bin/pi-worker" <report-path> '<task prompt>'
+```
+
+**codex-worker** (worker: `codex`) — no env vars needed:
+```bash
+"$(git rev-parse --show-toplevel)/.claude/bin/codex-worker" <report-path> '<task prompt>'
 ```
 
 External workers run headless — there is no interactive prompt to answer.
@@ -187,11 +203,14 @@ to the perf-selected worker or `sonnet-worker` plain when nothing in the list is
 (see the worker selection block above). Give it a report-path and the full
 brief. Report paths are repo-root `tasks/<task>/implementation-N.md`, never
 under `.claude/` — that tree is git-ignored except for `agents/`, `bin/`, and
-`config/`, so anything written there doesn't survive as project history. To
-use a specific model with `pi-worker`, set `PI_WORKER_MODEL` and
-`PI_WORKER_NAME` as env var prefixes on the Bash command (e.g.
-`PI_WORKER_MODEL="openrouter/z-ai/glm-5.3" PI_WORKER_NAME="pi-glm" .claude/bin/pi-worker ...`).
-Set both from the worker-map entry's `env` block so perf data is keyed correctly.
+`config/`, so anything written there doesn't survive as project history.
+
+- **pi-worker** (`pi`, `pi-glm`, `pi-kimi`, `pi-grok`): set `PI_WORKER_MODEL`
+  and `PI_WORKER_NAME` as env var prefixes from the worker-map `env` block so
+  perf data is keyed correctly (e.g.
+  `PI_WORKER_MODEL="openrouter/deepseek/deepseek-flash-latest" PI_WORKER_NAME="pi" .claude/bin/pi-worker <report-path> '<brief>'`).
+- **codex-worker** (`codex`): no env vars — invoke directly:
+  `.claude/bin/codex-worker <report-path> '<brief>'`.
 
 **For Verify and fallback Implement:** spawn `subagent_type: sonnet-worker`.
 It is always the choice for Verify, and the fallback implementer when an

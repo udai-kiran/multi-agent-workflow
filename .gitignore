@@ -2,3 +2,22 @@
 .claude/.credentials.json
 .claude/.claude.json
 .claude/.last-*
+
+# Claude runtime / ephemeral state
+.claude/backups/
+.claude/cache/
+.claude/file-history/
+.claude/history.jsonl
+.claude/hook-logs/
+.claude/prompt-log.jsonl
+.claude/projects/
+.claude/session-env/
+.claude/sessions/
+.claude/shell-snapshots/
+
+# Claude plugin runtime state
+.claude/plugins/cache/
+.claude/plugins/installed_plugins.json
+.claude/plugins/known_marketplaces.json
+.claude/plugins/marketplaces/
+.claude/plugins/.last_inuse_sweep
