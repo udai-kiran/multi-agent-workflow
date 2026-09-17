@@ -127,6 +127,38 @@ copy_file ".claude/settings.json"
 
 copy_file ".codex/AGENTS.md"
 
+# ── merge .gitignore (append lines not already present in target) ─────────────
+
+merge_gitignore() {
+    local src="$repo_root/.gitignore"
+    local dst="$target/.gitignore"
+    if [[ ! -f "$src" ]]; then
+        warn "skipping (not found): .gitignore"
+        return
+    fi
+    if [[ ! -f "$dst" ]]; then
+        cp "$src" "$dst"
+        info "copied .gitignore → .gitignore"
+        return
+    fi
+    local added=0
+    while IFS= read -r line; do
+        # Skip blank lines and comments for the duplicate check,
+        # but still append them if the exact line is absent.
+        if ! grep -qxF "$line" "$dst"; then
+            printf '%s\n' "$line" >> "$dst"
+            (( added++ )) || true
+        fi
+    done < "$src"
+    if (( added > 0 )); then
+        info "merged .gitignore → .gitignore ($added new line(s) added)"
+    else
+        info ".gitignore already up-to-date (no new lines)"
+    fi
+}
+
+merge_gitignore
+
 # ── copy top-level docs ───────────────────────────────────────────────────────
 
 copy_file "CLAUDE.md"

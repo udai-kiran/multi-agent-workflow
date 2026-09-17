@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Agent Workflow — Setup</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; }
+
+    /* Header */
+    header { text-align: center; margin-bottom: 3rem; }
+    header h1 { font-size: 2.2rem; font-weight: 700; color: #58a6ff; }
+    header p { color: #8b949e; margin-top: 0.5rem; font-size: 1rem; }
+
+    /* Section */
+    section { margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8b949e;
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Pipeline diagram */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .step {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 0.7rem 1.1rem;
+      text-align: center;
+      min-width: 110px;
+    }
+    .step .label { font-size: 0.75rem; color: #8b949e; }
+    .step .name { font-weight: 600; color: #e6edf3; font-size: 0.95rem; }
+    .step.you .name { color: #58a6ff; }
+    .step.worker .name { color: #3fb950; }
+    .step.codex .name { color: #d29922; }
+    .arrow {
+      color: #30363d;
+      font-size: 1.4rem;
+      padding: 0 0.3rem;
+      user-select: none;
+    }
+
+    /* Worker table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    thead th {
+      text-align: left;
+      padding: 0.5rem 0.8rem;
+      color: #8b949e;
+      font-weight: 600;
+      border-bottom: 1px solid #21262d;
+    }
+    tbody tr:hover { background: #161b22; }
+    tbody td {
+      padding: 0.55rem 0.8rem;
+      border-bottom: 1px solid #21262d;
+      vertical-align: middle;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-blue   { background: #1f3a5f; color: #58a6ff; }
+    .badge-green  { background: #1a3a2a; color: #3fb950; }
+    .badge-yellow { background: #3a2a0f; color: #d29922; }
+    .badge-gray   { background: #21262d; color: #8b949e; }
+
+    code {
+      background: #21262d;
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.82rem;
+    }
+
+    /* Rules */
+    .rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+    .rule-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .rule-card .icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+    .rule-card h3 { font-size: 0.9rem; color: #e6edf3; margin-bottom: 0.3rem; }
+    .rule-card p { font-size: 0.82rem; color: #8b949e; }
+
+    /* Agents grid */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 0.6rem;
+    }
+    .agent-chip {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .agent-chip span { color: #8b949e; font-size: 0.9rem; }
+
+    footer {
+      text-align: center;
+      color: #30363d;
+      font-size: 0.8rem;
+      margin-top: 3rem;
+      border-top: 1px solid #21262d;
+      padding-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Multi-Agent Workflow</h1>
+    <p>Plan → Implement → Verify → Review. Every pass, no skipping.</p>
+  </header>
+
+  <!-- Pipeline -->
+  <section>
+    <h2>The Loop</h2>
+    <div class="pipeline">
+      <div class="step you"><div class="label">You</div><div class="name">1. Plan</div></div>
+      <div class="arrow">→</div>
+      <div class="step worker"><div class="label">Worker</div><div class="name">2. Implement</div></div>
+      <div class="arrow">→</div>
+      <div class="step worker"><div class="label">sonnet-worker</div><div class="name">3. Verify</div></div>
+      <div class="arrow">→</div>
+      <div class="step you"><div class="label">You</div><div class="name">4. Self-review</div></div>
+      <div class="arrow">→</div>
+      <div class="step codex"><div class="label">codex-reviewer</div><div class="name">5. Codex review</div></div>
+      <div class="arrow">→</div>
+      <div class="step worker"><div class="label">Worker</div><div class="name">6. Fix &amp; loop</div></div>
+    </div>
+    <p style="color:#8b949e;font-size:0.82rem;text-align:center">
+      Verification is always a separate agent that did not write the code. Codex runs once, after the entire task is done.
+    </p>
+  </section>
+
+  <!-- Workers -->
+  <section>
+    <h2>External Workers</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Worker</th>
+          <th>Bin</th>
+          <th>Model</th>
+          <th>Provider</th>
+          <th>Persona</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><code>pi</code></td>
+          <td><code>pi-worker</code></td>
+          <td>deepseek-flash-latest</td>
+          <td><span class="badge badge-blue">openrouter</span></td>
+          <td>✅</td>
+          <td>Implement</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><code>pi-glm</code></td>
+          <td><code>pi-worker</code></td>
+          <td>glm-5.3-flash</td>
+          <td><span class="badge badge-blue">openrouter</span></td>
+          <td>✅</td>
+          <td>Implement</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><code>pi-kimi</code></td>
+          <td><code>pi-worker</code></td>
+          <td>kimi-k3</td>
+          <td><span class="badge badge-blue">openrouter</span></td>
+          <td>✅</td>
+          <td>Implement</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><code>pi-grok</code></td>
+          <td><code>pi-worker</code></td>
+          <td>grok-4.6</td>
+          <td><span class="badge badge-blue">openrouter</span></td>
+          <td>✅</td>
+          <td>Implement</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><code>codex</code></td>
+          <td><code>codex-worker</code></td>
+          <td>gpt-5.6-terra</td>
+          <td><span class="badge badge-yellow">openai</span></td>
+          <td>—</td>
+          <td>Implement</td>
+        </tr>
+        <tr>
+          <td>R</td>
+          <td><code>codex-reviewer</code></td>
+          <td><code>codex-reviewer</code></td>
+          <td>gpt-6-astra <span class="badge badge-yellow">reasoning: high</span></td>
+          <td><span class="badge badge-yellow">openai</span></td>
+          <td>—</td>
+          <td><strong>Final review only</strong></td>
+        </tr>
+        <tr>
+          <td>FB</td>
+          <td><code>sonnet-worker</code></td>
+          <td>subagent</td>
+          <td>Claude Sonnet 4.6</td>
+          <td><span class="badge badge-green">anthropic</span></td>
+          <td>✅</td>
+          <td><strong>Fallback + Verify only</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="color:#8b949e;font-size:0.82rem;margin-top:0.6rem">
+      Cold-start: round-robin until each worker has ≥ 5 samples.
+      After cold-start: pick highest pass rate ≥ 70%. Fallback on any permission escalation.
+    </p>
+  </section>
+
+  <!-- Hard rules -->
+  <section>
+    <h2>Hard Rules</h2>
+    <div class="rules">
+      <div class="rule-card">
+        <div class="icon">🎯</div>
+        <h3>Delegate the running, not the judgement</h3>
+        <p>Workers implement. You decide the diagnosis, design, and verdict.</p>
+      </div>
+      <div class="rule-card">
+        <div class="icon">🔬</div>
+        <h3>Verify is always independent</h3>
+        <p>The agent that wrote the code never verifies it. <code>sonnet-worker</code> always does Verify.</p>
+      </div>
+      <div class="rule-card">
+        <div class="icon">📋</div>
+        <h3>Literal output only</h3>
+        <p>Tests pass = literal output you read. "All tests pass" with no output is not evidence.</p>
+      </div>
+      <div class="rule-card">
+        <div class="icon">🔪</div>
+        <h3>Surgical changes</h3>
+        <p>Touch only what the task requires. No speculative refactors or "improvements".</p>
+      </div>
+      <div class="rule-card">
+        <div class="icon">📦</div>
+        <h3>Modular briefs</h3>
+        <p>One file / one bounded change per brief. Independent briefs run in parallel.</p>
+      </div>
+      <div class="rule-card">
+        <div class="icon">🚫</div>
+        <h3>Never <code>git add -A</code></h3>
+        <p>Name every file to stage. Never glob-add. Private artifacts must not be committed.</p>
+      </div>
+      <div class="rule-card">
+        <div class="icon">🔭</div>
+        <h3>Codex last, once</h3>
+        <p>Codex reviews the final diff after all briefs are done and self-reviewed. Never mid-task.</p>
+      </div>
+      <div class="rule-card">
+        <div class="icon">⚡</div>
+        <h3>Simplicity first</h3>
+        <p>Minimum code that solves the problem. No features beyond what was asked.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specialist agents -->
+  <section>
+    <h2>45+ Specialist Subagents</h2>
+    <div class="agents-grid">
+      <div class="agent-chip"><span>🏗️</span> architect-reviewer</div>
+      <div class="agent-chip"><span>🔙</span> backend-developer</div>
+      <div class="agent-chip"><span>🏗️</span> build-engineer</div>
+      <div class="agent-chip"><span>✅</span> ci-validator</div>
+      <div class="agent-chip"><span>💻</span> cli-developer</div>
+      <div class="agent-chip"><span>☁️</span> cloud-architect</div>
+      <div class="agent-chip"><span>🔍</span> code-reviewer</div>
+      <div class="agent-chip"><span>🤖</span> coordinator</div>
+      <div class="agent-chip"><span>🗄️</span> database-administrator</div>
+      <div class="agent-chip"><span>🐛</span> debugger</div>
+      <div class="agent-chip"><span>📦</span> dependency-manager</div>
+      <div class="agent-chip"><span>🚀</span> deployment-engineer</div>
+      <div class="agent-chip"><span>⚙️</span> devops-engineer</div>
+      <div class="agent-chip"><span>🐍</span> django-developer</div>
+      <div class="agent-chip"><span>📝</span> documentation-engineer</div>
+      <div class="agent-chip"><span>🔌</span> embedded-systems</div>
+      <div class="agent-chip"><span>🔍</span> Explore</div>
+      <div class="agent-chip"><span>🖥️</span> frontend-developer</div>
+      <div class="agent-chip"><span>🔀</span> fullstack-developer</div>
+      <div class="agent-chip"><span>🔀</span> git-workflow-manager</div>
+      <div class="agent-chip"><span>🐹</span> golang-pro</div>
+      <div class="agent-chip"><span>📊</span> graphql-architect</div>
+      <div class="agent-chip"><span>🚨</span> incident-responder</div>
+      <div class="agent-chip"><span>☸️</span> kubernetes-specialist</div>
+      <div class="agent-chip"><span>🔌</span> mcp-developer</div>
+      <div class="agent-chip"><span>🏗️</span> microservices-architect</div>
+      <div class="agent-chip"><span>📱</span> mobile-developer</div>
+      <div class="agent-chip"><span>🌐</span> network-engineer</div>
+      <div class="agent-chip"><span>⚡</span> performance-engineer</div>
+      <div class="agent-chip"><span>📐</span> Plan</div>
+      <div class="agent-chip"><span>🏗️</span> platform-engineer</div>
+      <div class="agent-chip"><span>🐍</span> python-pro</div>
+      <div class="agent-chip"><span>♻️</span> refactoring-specialist</div>
+      <div class="agent-chip"><span>🦀</span> rust-engineer</div>
+      <div class="agent-chip"><span>🔒</span> security-engineer</div>
+      <div class="agent-chip"><span>🛠️</span> sonnet-worker</div>
+      <div class="agent-chip"><span>🗄️</span> sql-pro</div>
+      <div class="agent-chip"><span>📊</span> sre-engineer</div>
+      <div class="agent-chip"><span>🏃</span> test-runner</div>
+      <div class="agent-chip"><span>🏗️</span> terraform-engineer</div>
+      <div class="agent-chip"><span>🔧</span> tooling-engineer</div>
+      <div class="agent-chip"><span>📘</span> typescript-pro</div>
+      <div class="agent-chip"><span>🎨</span> ui-designer</div>
+      <div class="agent-chip"><span>💚</span> vue-expert</div>
+      <div class="agent-chip"><span>🔌</span> websocket-engineer</div>
+    </div>
+  </section>
+
+  <footer>
+    Multi-Agent Workflow · udaikiran · 2026
+  </footer>
+
+</div>
+</body>
+</html>
