@@ -26,6 +26,5 @@ exec codex exec \
     --dangerously-bypass-approvals-and-sandbox \
     --cd "$repo_root" \
     --model gpt-6-astra \
-    --reasoning high \
     --output-last-message "$report_file" \
     -- "$1" < /dev/null
