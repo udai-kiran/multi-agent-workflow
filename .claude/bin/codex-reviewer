@@ -21,10 +21,14 @@ report_file="$(mktemp "$task_dir/codex-review.XXXXXX.md")"
 
 echo "codex review written to: $report_file" >&2
 
+model="${CODEX_REVIEWER_MODEL:-gpt-6-astra}"
+reasoning="${CODEX_REVIEWER_REASONING:-high}"
+
 exec codex exec \
     --ephemeral \
     --dangerously-bypass-approvals-and-sandbox \
     --cd "$repo_root" \
-    --model gpt-6-astra \
+    --model "$model" \
+    --reasoning "$reasoning" \
     --output-last-message "$report_file" \
     -- "$1" < /dev/null

@@ -46,7 +46,7 @@ highest-rate worker; break ties by `cold_start_order` position. Check
 | `pi-kimi` | `pi-worker` | `openrouter/moonshotai/kimi-k3` | 3rd cold-start |
 | `pi-grok` | `pi-worker` | `openrouter/x-ai/grok-4.6` | 4th cold-start |
 | `pi-gemini` | `pi-worker` | `openrouter/google/gemini-3.8-flash` | 5th cold-start |
-| `codex` | `codex-worker` | `gpt-5.6-terra` | 6th cold-start; also used for final review |
+| `codex` | `codex-worker` | `gpt-5.6-luna` | 6th cold-start; also used for final review |
 | `sonnet-worker` | subagent | Claude Sonnet | fallback + verify only |
 
 Invoke the selected worker's bin script via a `Bash` tool call with

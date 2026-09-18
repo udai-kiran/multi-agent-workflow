@@ -1,6 +1,6 @@
 ---
 name: codex-reviewer
-description: Delegates code review tasks to the OpenAI Codex CLI (gpt-5.6-sol model) via the codex-reviewer bin script. Captures a structured review report.
+description: Delegates code review tasks to the OpenAI Codex CLI (gpt-6-astra model, high reasoning) via the codex-reviewer bin script. Captures a structured review report.
 model: haiku
 tools: Bash, Read
 ---

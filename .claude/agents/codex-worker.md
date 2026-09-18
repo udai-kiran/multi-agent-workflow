@@ -1,6 +1,6 @@
 ---
 name: codex-worker
-description: Delegates implementation tasks to the OpenAI Codex CLI (terra model) via the codex-worker bin script. Captures a structured report of all changes made.
+description: Delegates implementation tasks to the OpenAI Codex CLI (luna model, max reasoning) via the codex-worker bin script. Captures a structured report of all changes made.
 model: haiku
 tools: Bash, Read
 ---

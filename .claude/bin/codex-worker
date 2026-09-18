@@ -12,7 +12,8 @@ Usage: codex-worker <report-path> '<task prompt>'
                  append-only history, so use the next iteration number.
 
 Environment:
-  CODEX_WORKER_MODEL   Model to use (default: terra)
+  CODEX_WORKER_MODEL     Model to use (default: gpt-5.6-luna)
+  CODEX_WORKER_REASONING Reasoning effort (default: max)
 EOF
 }
 
@@ -110,7 +111,8 @@ trap 'rm -f "$report_file"' EXIT
 
 echo "codex worker target: $dest" >&2
 
-model="${CODEX_WORKER_MODEL:-gpt-5.6-terra}"
+model="${CODEX_WORKER_MODEL:-gpt-5.6-luna}"
+reasoning="${CODEX_WORKER_REASONING:-max}"
 
 # The worker IS allowed to modify files. The prompt guard ensures the final
 # message is a complete implementation report suitable for coordinator review.
@@ -136,6 +138,7 @@ codex exec \
     --ephemeral \
     --dangerously-bypass-approvals-and-sandbox \
     -m "$model" \
+    --reasoning "$reasoning" \
     -C "$repo_root" \
     -o "$report_file" \
     -- "${prompt}${prompt_guard}" < /dev/null || codex_status=$?
