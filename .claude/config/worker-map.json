@@ -44,6 +44,17 @@
         "PI_WORKER_THINKING": "high"
       }
     },
+    "pi-gemini": {
+      "bin": "pi-worker",
+      "model": "openrouter/google/gemini-3.8-flash",
+      "provider": "openrouter",
+      "supports_persona": true,
+      "env": {
+        "PI_WORKER_MODEL": "openrouter/google/gemini-3.8-flash",
+        "PI_WORKER_NAME": "pi-gemini",
+        "PI_WORKER_THINKING": "high"
+      }
+    },
     "codex": {
       "bin": "codex-worker",
       "model": "gpt-5.6-terra",
@@ -58,6 +69,7 @@
       "pi-glm",
       "pi-kimi",
       "pi-grok",
+      "pi-gemini",
       "codex"
     ],
     "min_samples": 5,
