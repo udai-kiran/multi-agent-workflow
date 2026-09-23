@@ -1,83 +1,44 @@
 {
   "workers": {
-    "pi": {
-      "bin": "pi-worker",
-      "model": "openrouter/deepseek/deepseek-flash-latest",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/deepseek/deepseek-flash-latest",
-        "PI_WORKER_NAME": "pi",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-glm": {
-      "bin": "pi-worker",
-      "model": "openrouter/z-ai/glm-5.3-flash",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/z-ai/glm-5.3-flash",
-        "PI_WORKER_NAME": "pi-glm",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-kimi": {
-      "bin": "pi-worker",
-      "model": "openrouter/moonshotai/kimi-k3",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/moonshotai/kimi-k3",
-        "PI_WORKER_NAME": "pi-kimi",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-grok": {
-      "bin": "pi-worker",
-      "model": "openrouter/x-ai/grok-4.6",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/x-ai/grok-4.6",
-        "PI_WORKER_NAME": "pi-grok",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-gemini": {
-      "bin": "pi-worker",
-      "model": "openrouter/google/gemini-3.8-flash",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/google/gemini-3.8-flash",
-        "PI_WORKER_NAME": "pi-gemini",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "codex": {
+    "sol": {
+      "role": "implement",
       "bin": "codex-worker",
-      "model": "gpt-5.6-luna",
-      "provider": "openai",
-      "supports_persona": false,
+      "model": "gpt-6-sol",
+      "supports_persona": true,
       "env": {
-        "CODEX_WORKER_MODEL": "gpt-5.6-luna",
+        "CODEX_WORKER_MODEL": "gpt-6-sol",
         "CODEX_WORKER_REASONING": "max"
       }
+    },
+    "luna": {
+      "role": "grunt",
+      "bin": "codex-worker",
+      "model": "gpt-6-luna",
+      "supports_persona": true,
+      "env": {
+        "CODEX_WORKER_MODEL": "gpt-6-luna",
+        "CODEX_WORKER_REASONING": "medium"
+      }
+    },
+    "haiku-worker": {
+      "role": "grunt",
+      "subagent": "haiku-worker",
+      "model": "haiku"
+    },
+    "sonnet-worker": {
+      "role": "verify",
+      "subagent": "sonnet-worker",
+      "model": "sonnet"
+    },
+    "astra": {
+      "role": "review",
+      "bin": "codex-reviewer",
+      "model": "gpt-6-astra",
+      "env": {
+        "CODEX_REVIEWER_MODEL": "gpt-6-astra",
+        "CODEX_REVIEWER_REASONING": "high"
+      }
     }
-  },
-  "selection": {
-    "cold_start_order": [
-      "pi",
-      "pi-glm",
-      "pi-kimi",
-      "pi-grok",
-      "pi-gemini",
-      "codex"
-    ],
-    "min_samples": 5,
-    "min_pass_rate": 0.70,
-    "overrides": {}
   },
   "fallback": "sonnet-worker"
 }
