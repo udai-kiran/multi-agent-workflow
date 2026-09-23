@@ -21,3 +21,14 @@
 .claude/plugins/known_marketplaces.json
 .claude/plugins/marketplaces/
 .claude/plugins/.last_inuse_sweep
+.claude/plugins/data/
+.claude/plugins/synced/
+
+# Claude daemon / jobs / synced skills / state (per-machine; daemon holds auth keys)
+.claude/daemon/
+.claude/daemon.lock
+.claude/daemon.log
+.claude/daemon.status.json
+.claude/jobs/
+.claude/skills/synced/
+.claude/state/
