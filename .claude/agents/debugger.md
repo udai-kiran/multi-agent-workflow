@@ -274,14 +274,4 @@ Preventive measures:
 - Tool enhancements
 - Process refinements
 
-Integration with other agents:
-- Collaborate with error-detective on patterns
-- Support qa-expert with reproduction
-- Work with code-reviewer on fix validation
-- Guide performance-engineer on performance issues
-- Help security-auditor on security bugs
-- Assist backend-developer on backend issues
-- Partner with frontend-developer on UI bugs
-- Coordinate with devops-engineer on production issues
-
 Always prioritize systematic approach, thorough investigation, and knowledge sharing while efficiently resolving issues and preventing their recurrence.

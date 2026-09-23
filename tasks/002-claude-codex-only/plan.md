@@ -30,14 +30,18 @@ codex-reviewer call currently fails. Fix: `-c model_reasoning_effort=<level>`.
 ## Changes
 
 1. `.claude/bin/codex-worker` — fix reasoning flag; default model gpt-6-sol;
-   optional 3rd arg `[persona-name]` (ported from pi-worker); post-run
-   format-file pass (ported from pi-worker); drop perf-log write.
-2. `.claude/bin/codex-reviewer` — fix reasoning flag; drop pi-worker comment.
+   optional 3rd arg `[persona-name]` (ported from pi-worker); drop perf-log
+   write. (A ported post-run format-file pass was dropped after review: it
+   formatted every dirty file, including user and concurrent-worker edits.)
+2. `.claude/bin/codex-reviewer` — fix reasoning flag; drop pi-worker comment;
+   run under `--sandbox read-only` instead of bypassing the sandbox (review
+   finding: docs claimed read-only, bin was not).
 3. Delete: `.claude/bin/pi-worker`, `.claude/bin/worker-log`,
    `.claude/bin/worker-stats`, `.claude/agents/pi-worker.md`, 38 specialist
    agents, `tasks/smoke-test/*{pi,dsh}*`.
    Keep specialists: python-pro, typescript-pro, golang-pro, rust-engineer,
    sql-pro, security-engineer, debugger, performance-engineer.
+   Their "Integration with other agents" blocks (naming deleted agents) removed.
    Keep `tasks/.worker-*.jsonl` as history (user's choice).
 4. `.claude/config/worker-map.json` — fixed role map (coordinator writes).
 5. `.claude/agents/coordinator.md` — rewrite for the roles (coordinator writes).

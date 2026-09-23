@@ -156,7 +156,7 @@
     <div class="pipeline">
       <div class="step you"><div class="label">You</div><div class="name">1. Plan</div></div>
       <div class="arrow">→</div>
-      <div class="step worker"><div class="label">Worker</div><div class="name">2. Implement</div></div>
+      <div class="step worker"><div class="label">sol</div><div class="name">2. Implement</div></div>
       <div class="arrow">→</div>
       <div class="step worker"><div class="label">sonnet-worker</div><div class="name">3. Verify</div></div>
       <div class="arrow">→</div>
@@ -164,7 +164,7 @@
       <div class="arrow">→</div>
       <div class="step codex"><div class="label">codex-reviewer</div><div class="name">5. Codex review</div></div>
       <div class="arrow">→</div>
-      <div class="step worker"><div class="label">Worker</div><div class="name">6. Fix &amp; loop</div></div>
+      <div class="step worker"><div class="label">sol</div><div class="name">6. Fix &amp; loop</div></div>
     </div>
     <p style="color:#8b949e;font-size:0.82rem;text-align:center">
       Verification is always a separate agent that did not write the code. Codex runs once, after the entire task is done.
@@ -173,7 +173,7 @@
 
   <!-- Workers -->
   <section>
-    <h2>External Workers</h2>
+    <h2>Agents &amp; Workers</h2>
     <table>
       <thead>
         <tr>
@@ -189,81 +189,62 @@
       <tbody>
         <tr>
           <td>1</td>
-          <td><code>pi</code></td>
-          <td><code>pi-worker</code></td>
-          <td>deepseek-flash-latest</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
-          <td>✅</td>
-          <td>Implement</td>
+          <td><code>Coordinator</code></td>
+          <td>subagent</td>
+          <td>Claude Opus 5.5</td>
+          <td><span class="badge badge-green">anthropic</span></td>
+          <td>—</td>
+          <td>Coordinate / plan</td>
         </tr>
         <tr>
           <td>2</td>
-          <td><code>pi-glm</code></td>
-          <td><code>pi-worker</code></td>
-          <td>glm-5.3-flash</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
+          <td><code>sol</code></td>
+          <td><code>codex-worker bin</code></td>
+          <td>gpt-6-sol <span class="badge badge-yellow">reasoning: max</span></td>
+          <td><span class="badge badge-yellow">openai</span></td>
           <td>✅</td>
           <td>Implement</td>
         </tr>
         <tr>
           <td>3</td>
-          <td><code>pi-kimi</code></td>
-          <td><code>pi-worker</code></td>
-          <td>kimi-k3</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
+          <td><code>luna</code></td>
+          <td><code>codex-worker bin</code></td>
+          <td>gpt-6-luna <span class="badge badge-yellow">reasoning: medium</span></td>
+          <td><span class="badge badge-yellow">openai</span></td>
           <td>✅</td>
-          <td>Implement</td>
+          <td>Grunt / log analysis</td>
         </tr>
         <tr>
           <td>4</td>
-          <td><code>pi-grok</code></td>
-          <td><code>pi-worker</code></td>
-          <td>grok-4.6</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
-          <td>✅</td>
-          <td>Implement</td>
+          <td><code>haiku-worker</code></td>
+          <td>subagent</td>
+          <td>Claude Haiku</td>
+          <td><span class="badge badge-green">anthropic</span></td>
+          <td>—</td>
+          <td>Grunt / log analysis (read-only)</td>
         </tr>
         <tr>
           <td>5</td>
-          <td><code>pi-gemini</code></td>
-          <td><code>pi-worker</code></td>
-          <td>gemini-3.8-flash</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
+          <td><code>sonnet-worker</code></td>
+          <td>subagent</td>
+          <td>Claude Sonnet</td>
+          <td><span class="badge badge-green">anthropic</span></td>
           <td>✅</td>
-          <td>Implement</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td><code>codex</code></td>
-          <td><code>codex-worker</code></td>
-          <td>gpt-5.6-luna <span class="badge badge-yellow">reasoning: max</span></td>
-          <td><span class="badge badge-yellow">openai</span></td>
-          <td>—</td>
-          <td>Implement</td>
+          <td>Verify + fallback</td>
         </tr>
         <tr>
           <td>R</td>
           <td><code>codex-reviewer</code></td>
-          <td><code>codex-reviewer</code></td>
+          <td><code>codex-reviewer bin</code></td>
           <td>gpt-6-astra <span class="badge badge-yellow">reasoning: high</span></td>
           <td><span class="badge badge-yellow">openai</span></td>
           <td>—</td>
           <td><strong>Final review only</strong></td>
         </tr>
-        <tr>
-          <td>FB</td>
-          <td><code>sonnet-worker</code></td>
-          <td>subagent</td>
-          <td>Claude Sonnet 4.6</td>
-          <td><span class="badge badge-green">anthropic</span></td>
-          <td>✅</td>
-          <td><strong>Fallback + Verify only</strong></td>
-        </tr>
       </tbody>
     </table>
     <p style="color:#8b949e;font-size:0.82rem;margin-top:0.6rem">
-      Cold-start: round-robin until each worker has ≥ 5 samples.
-      After cold-start: pick highest pass rate ≥ 70%. Fallback on any permission escalation.
+      Fixed roles, no performance selection; fall back to <code>sonnet-worker</code> if Codex fails.
     </p>
   </section>
 
@@ -274,7 +255,7 @@
       <div class="rule-card">
         <div class="icon">🎯</div>
         <h3>Delegate the running, not the judgement</h3>
-        <p>Workers implement. You decide the diagnosis, design, and verdict.</p>
+        <p><code>sol</code> implements. You decide the diagnosis, design, and verdict.</p>
       </div>
       <div class="rule-card">
         <div class="icon">🔬</div>
@@ -316,57 +297,27 @@
 
   <!-- Specialist agents -->
   <section>
-    <h2>35+ Specialist Subagents</h2>
-    <h3>Spawnable Subagents</h3>
+    <h2>Specialist Personas</h2>
+    <p>Injected via the <code>codex-worker</code> persona arg or named in a <code>sonnet-worker</code> brief.</p>
     <div class="agents-grid">
-      <div class="agent-chip"><span>🏗️</span> architect-reviewer</div>
-      <div class="agent-chip"><span>🔙</span> backend-developer</div>
-      <div class="agent-chip"><span>🏗️</span> build-engineer</div>
-      <div class="agent-chip"><span>✅</span> ci-validator</div>
-      <div class="agent-chip"><span>💻</span> cli-developer</div>
-      <div class="agent-chip"><span>☁️</span> cloud-architect</div>
-      <div class="agent-chip"><span>🔍</span> code-reviewer</div>
-      <div class="agent-chip"><span>🤖</span> coordinator</div>
-      <div class="agent-chip"><span>🗄️</span> database-administrator</div>
-      <div class="agent-chip"><span>🐛</span> debugger</div>
-      <div class="agent-chip"><span>📦</span> dependency-manager</div>
-      <div class="agent-chip"><span>🚀</span> deployment-engineer</div>
-      <div class="agent-chip"><span>⚙️</span> devops-engineer</div>
-      <div class="agent-chip"><span>📝</span> documentation-engineer</div>
-      <div class="agent-chip"><span>🔌</span> embedded-systems</div>
-      <div class="agent-chip"><span>🔍</span> Explore</div>
-      <div class="agent-chip"><span>🖥️</span> frontend-developer</div>
-      <div class="agent-chip"><span>🔀</span> fullstack-developer</div>
-      <div class="agent-chip"><span>🔀</span> git-workflow-manager</div>
-      <div class="agent-chip"><span>📊</span> graphql-architect</div>
-      <div class="agent-chip"><span>🚨</span> incident-responder</div>
-      <div class="agent-chip"><span>☸️</span> kubernetes-specialist</div>
-      <div class="agent-chip"><span>🔌</span> mcp-developer</div>
-      <div class="agent-chip"><span>🏗️</span> microservices-architect</div>
-      <div class="agent-chip"><span>🌐</span> network-engineer</div>
-      <div class="agent-chip"><span>⚡</span> performance-engineer</div>
-      <div class="agent-chip"><span>📐</span> Plan</div>
-      <div class="agent-chip"><span>🏗️</span> platform-engineer</div>
-      <div class="agent-chip"><span>♻️</span> refactoring-specialist</div>
-      <div class="agent-chip"><span>🔒</span> security-engineer</div>
-      <div class="agent-chip"><span>🛠️</span> sonnet-worker</div>
-      <div class="agent-chip"><span>📊</span> sre-engineer</div>
-      <div class="agent-chip"><span>🏃</span> test-runner</div>
-      <div class="agent-chip"><span>🏗️</span> terraform-engineer</div>
-      <div class="agent-chip"><span>🔧</span> tooling-engineer</div>
-      <div class="agent-chip"><span>🎨</span> ui-designer</div>
-      <div class="agent-chip"><span>🔌</span> websocket-engineer</div>
-    </div>
-    <h3>Language Personas (inject via pi-worker)</h3>
-    <div class="agents-grid">
-      <div class="agent-chip"><span>🐍</span> django-developer</div>
-      <div class="agent-chip"><span>🐹</span> golang-pro</div>
-      <div class="agent-chip"><span>📱</span> mobile-developer</div>
       <div class="agent-chip"><span>🐍</span> python-pro</div>
+      <div class="agent-chip"><span>📘</span> typescript-pro</div>
+      <div class="agent-chip"><span>🐹</span> golang-pro</div>
       <div class="agent-chip"><span>🦀</span> rust-engineer</div>
       <div class="agent-chip"><span>🗄️</span> sql-pro</div>
-      <div class="agent-chip"><span>📘</span> typescript-pro</div>
-      <div class="agent-chip"><span>💚</span> vue-expert</div>
+      <div class="agent-chip"><span>🔒</span> security-engineer</div>
+      <div class="agent-chip"><span>🐛</span> debugger</div>
+      <div class="agent-chip"><span>⚡</span> performance-engineer</div>
+    </div>
+    <h3>Workflow Agents</h3>
+    <div class="agents-grid">
+      <div class="agent-chip"><span>🤖</span> coordinator</div>
+      <div class="agent-chip"><span>⚙️</span> codex-worker</div>
+      <div class="agent-chip"><span>🔍</span> codex-reviewer</div>
+      <div class="agent-chip"><span>🛠️</span> sonnet-worker</div>
+      <div class="agent-chip"><span>📖</span> haiku-worker</div>
+      <div class="agent-chip"><span>🏃</span> test-runner</div>
+      <div class="agent-chip"><span>✅</span> ci-validator</div>
     </div>
   </section>
 

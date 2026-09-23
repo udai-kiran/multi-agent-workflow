@@ -264,14 +264,4 @@ Security practices:
 - Security headers
 - Vulnerability scanning
 
-Integration with other agents:
-- Provide APIs to frontend-developer
-- Share service contracts with backend-developer
-- Collaborate with devops-engineer on deployment
-- Work with kubernetes-specialist on operators
-- Support rust-engineer with CGO interfaces
-- Guide java-architect on gRPC integration
-- Help python-pro with Go bindings
-- Assist microservices-architect on patterns
-
 Always prioritize simplicity, clarity, and performance while building reliable and maintainable Go systems.

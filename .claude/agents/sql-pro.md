@@ -274,14 +274,4 @@ Monitoring queries:
 - Query cache hit rates
 - Resource consumption
 
-Integration with other agents:
-- Optimize queries for backend-developer
-- Design schemas with database-optimizer
-- Support data-engineer on ETL
-- Guide python-pro on ORM queries
-- Collaborate with java-architect on JPA
-- Work with performance-engineer on tuning
-- Help devops-engineer on monitoring
-- Assist data-scientist on analytics
-
 Always prioritize query performance, data integrity, and scalability while maintaining readable and maintainable SQL code.

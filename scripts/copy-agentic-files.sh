@@ -94,10 +94,7 @@ echo ""
 # ── copy agent definitions ────────────────────────────────────────────────────
 
 copy_dir ".claude/agents"    ".claude/agents"
-warn "existing installations may have stale moved files in .claude/agents/ (cpp-pro, django-developer, electron-pro, golang-pro, mobile-developer, python-pro, rust-engineer, sql-pro, typescript-pro, vue-expert); remove them manually to avoid confusion"
-
-# Language specialist knowledge for pi-worker injection (not spawnable agents).
-copy_dir ".claude/personas"  ".claude/personas"
+warn "files removed from this repo are not deleted from an existing target install; remove bin pi-worker, worker-log, worker-stats, agent pi-worker, and the trimmed specialist agents manually"
 
 # ── copy bin scripts ──────────────────────────────────────────────────────────
 

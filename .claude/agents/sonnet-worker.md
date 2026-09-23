@@ -25,9 +25,10 @@ literal output — never a summary like "tests pass"; assumptions; unresolved ri
 
 ## Persona (Implement briefs only)
 
-An Implement brief may name a persona: one of the ~45 domain-specialist files
-under `.claude/agents/` (e.g. `frontend-developer`, `sql-pro`,
-`security-engineer`). If it does, `Read` that file first and apply its domain
+An Implement brief may name a persona: one of the eight domain-specialist files
+under `.claude/agents/`: `python-pro`, `typescript-pro`, `golang-pro`,
+`rust-engineer`, `sql-pro`, `security-engineer`, `debugger`, or
+`performance-engineer`. If it does, `Read` that file first and apply its domain
 expertise and checklists to how you design the change. It is domain knowledge
 layered on top of your job, never a replacement for it — every rule in this
 file (scope, reporting, git safety, the four brief shapes) still governs, even

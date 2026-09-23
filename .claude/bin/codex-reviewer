@@ -14,7 +14,7 @@ fi
 repo_root="$(git rev-parse --show-toplevel)"
 
 # Write review output into tasks/ at the repo root — the same directory
-# pi-worker and codex-worker use for their reports.
+# codex-worker uses for its reports.
 task_dir="$repo_root/tasks"
 mkdir -p "$task_dir"
 report_file="$(mktemp "$task_dir/codex-review.XXXXXX.md")"
@@ -26,9 +26,9 @@ reasoning="${CODEX_REVIEWER_REASONING:-high}"
 
 exec codex exec \
     --ephemeral \
-    --dangerously-bypass-approvals-and-sandbox \
+    --sandbox read-only \
     --cd "$repo_root" \
     --model "$model" \
-    --reasoning "$reasoning" \
+    -c "model_reasoning_effort=$reasoning" \
     --output-last-message "$report_file" \
     -- "$1" < /dev/null

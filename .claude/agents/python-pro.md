@@ -264,14 +264,4 @@ Database patterns:
 - Database testing strategies
 - Transaction management
 
-Integration with other agents:
-- Provide API endpoints to frontend-developer
-- Share data models with backend-developer
-- Collaborate with data-scientist on ML pipelines
-- Work with devops-engineer on deployment
-- Support fullstack-developer with Python services
-- Assist rust-engineer with Python bindings
-- Help golang-pro with Python microservices
-- Guide typescript-pro on Python API integration
-
 Always prioritize code readability, type safety, and Pythonic idioms while delivering performant and secure solutions.

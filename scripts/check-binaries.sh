@@ -8,7 +8,7 @@
 #   1  one or more required binaries missing
 #
 # Required binaries:
-#   pi  → pi-worker (npm global: @earendil-works/pi-coding-agent)
+#   codex → codex-worker and codex-reviewer (npm global: @openai/codex)
 #   rg  → Claude Code Grep tool backend (ripgrep)
 #   fd  → Claude Code Glob tool backend (fd-find)
 set -euo pipefail
@@ -41,7 +41,7 @@ echo ""
 
 # ── required ─────────────────────────────────────────────────────────────────
 
-check_bin "pi" "pi-worker: runs 'pi --no-session --model …'" ||
+check_bin "codex" "codex-worker and codex-reviewer" ||
   ((missing_required++)) || true
 
 check_bin "rg" "Claude Code Grep tool backend (ripgrep)" ||
@@ -60,7 +60,7 @@ else
   printf '\033[31m%d required binary/binaries missing.\033[0m\n' "$missing_required" >&2
   echo "" >&2
   echo "Install hints:" >&2
-  echo "  pi    — npm install -g @earendil-works/pi-coding-agent" >&2
+  echo "  codex — npm install -g @openai/codex" >&2
   echo "  rg    — https://github.com/BurntSushi/ripgrep#installation" >&2
   echo "  fd    — https://github.com/sharkdp/fd#installation" >&2
   exit 1
