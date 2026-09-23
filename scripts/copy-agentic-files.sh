@@ -94,7 +94,7 @@ echo ""
 # ── copy agent definitions ────────────────────────────────────────────────────
 
 copy_dir ".claude/agents"    ".claude/agents"
-warn "files removed from this repo are not deleted from an existing target install; remove bin pi-worker, worker-log, worker-stats, agent pi-worker, and the trimmed specialist agents manually"
+warn "files removed from this repo are not deleted from an existing target install; remove bin pi-worker, worker-log, worker-stats, agent pi-worker, test-runner, ci-validator, and the trimmed specialist agents manually"
 
 # ── copy bin scripts ──────────────────────────────────────────────────────────
 

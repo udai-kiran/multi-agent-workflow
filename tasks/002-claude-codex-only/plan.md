@@ -42,7 +42,11 @@ codex-reviewer call currently fails. Fix: `-c model_reasoning_effort=<level>`.
    Keep specialists: python-pro, typescript-pro, golang-pro, rust-engineer,
    sql-pro, security-engineer, debugger, performance-engineer.
    Their "Integration with other agents" blocks (naming deleted agents) removed.
-   Keep `tasks/.worker-*.jsonl` as history (user's choice).
+   Follow-up (user request): also delete `tasks/.worker-*.jsonl` (fed the removed
+   worker-stats) and agents `test-runner` / `ci-validator` — they wrapped
+   compass-only bins (`run-gates`: npm typecheck/lint/test; `check-ci`:
+   node:test log parsing) at a nonexistent `/work/personal/compass` path.
+   `haiku-worker` covers running named commands and CI/log analysis.
 4. `.claude/config/worker-map.json` — fixed role map (coordinator writes).
 5. `.claude/agents/coordinator.md` — rewrite for the roles (coordinator writes).
 6. `.claude/agents/codex-worker.md` — repo-relative bin path, sol/luna, persona arg.
