@@ -1,83 +1,65 @@
 {
-  "workers": {
-    "pi": {
-      "bin": "pi-worker",
-      "model": "openrouter/deepseek/deepseek-flash-latest",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/deepseek/deepseek-flash-latest",
-        "PI_WORKER_NAME": "pi",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-glm": {
-      "bin": "pi-worker",
-      "model": "openrouter/z-ai/glm-5.3-flash",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/z-ai/glm-5.3-flash",
-        "PI_WORKER_NAME": "pi-glm",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-kimi": {
-      "bin": "pi-worker",
-      "model": "openrouter/moonshotai/kimi-k3",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/moonshotai/kimi-k3",
-        "PI_WORKER_NAME": "pi-kimi",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-grok": {
-      "bin": "pi-worker",
-      "model": "openrouter/x-ai/grok-4.6",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/x-ai/grok-4.6",
-        "PI_WORKER_NAME": "pi-grok",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "pi-gemini": {
-      "bin": "pi-worker",
-      "model": "openrouter/google/gemini-3.8-flash",
-      "provider": "openrouter",
-      "supports_persona": true,
-      "env": {
-        "PI_WORKER_MODEL": "openrouter/google/gemini-3.8-flash",
-        "PI_WORKER_NAME": "pi-gemini",
-        "PI_WORKER_THINKING": "high"
-      }
-    },
-    "codex": {
-      "bin": "codex-worker",
-      "model": "gpt-5.6-luna",
-      "provider": "openai",
-      "supports_persona": false,
-      "env": {
-        "CODEX_WORKER_MODEL": "gpt-5.6-luna",
-        "CODEX_WORKER_REASONING": "max"
-      }
-    }
+  "coordinator": {
+    "provider": "anthropic",
+    "model": "claude-opus-5-5",
+    "mechanism": "top-level subagent (loop: true)"
   },
-  "selection": {
-    "cold_start_order": [
-      "pi",
-      "pi-glm",
-      "pi-kimi",
-      "pi-grok",
-      "pi-gemini",
-      "codex"
-    ],
-    "min_samples": 5,
-    "min_pass_rate": 0.70,
-    "overrides": {}
+  "primary-implementer": {
+    "provider": "openai",
+    "model": "gpt-6.1-sol",
+    "reasoning": "medium",
+    "mechanism": "codex-worker bin (CODEX_WORKER_MODEL=gpt-6.1-sol CODEX_WORKER_REASONING=medium; these are the bin defaults)",
+    "alias": "sol"
   },
-  "fallback": "sonnet-worker"
+  "mechanical-worker": {
+    "provider": "openai",
+    "model": "gpt-6-luna",
+    "reasoning": "high",
+    "mechanism": "codex-worker bin (CODEX_WORKER_MODEL=gpt-6-luna CODEX_WORKER_REASONING=high)",
+    "alias": "luna"
+  },
+  "research-worker": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "mechanism": "subagent, read-only"
+  },
+  "verification-engineer": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-5-5",
+    "mechanism": "subagent, permissionMode: acceptEdits"
+  },
+  "plan-reviewer": {
+    "provider": "anthropic",
+    "model": "claude-opus-5-5",
+    "mechanism": "subagent, read-only"
+  },
+  "plan-reviewer-secondary": {
+    "provider": "openai",
+    "model": "gpt-6.1-sol",
+    "reasoning": "high",
+    "mechanism": "codex-reviewer bin (CODEX_REVIEWER_REASONING=high), read-only sandbox",
+    "alias": "sol-plan-review"
+  },
+  "correctness-reviewer": {
+    "provider": "openai",
+    "model": "gpt-6.1-sol",
+    "reasoning": "medium",
+    "mechanism": "codex-reviewer bin, read-only sandbox",
+    "alias": "codex-reviewer"
+  },
+  "adversarial-reviewer": {
+    "provider": "anthropic",
+    "model": "claude-opus-5-5",
+    "mechanism": "subagent, read-only"
+  },
+  "contrarian": {
+    "provider": "anthropic",
+    "model": "claude-opus-5-5",
+    "mechanism": "subagent, read-only, re-plan only"
+  },
+  "doc-writer": {
+    "provider": "anthropic",
+    "model": "claude-haiku-5-5",
+    "mechanism": "subagent, permissionMode: acceptEdits, comments and docs only"
+  }
 }

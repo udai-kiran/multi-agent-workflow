@@ -147,123 +147,61 @@
 
   <header>
     <h1>Multi-Agent Workflow</h1>
-    <p>Plan → Implement → Verify → Review. Every pass, no skipping.</p>
+    <p>Plan → Implement → Verify → Document → Review. Every pass, no skipping.</p>
   </header>
 
   <!-- Pipeline -->
   <section>
     <h2>The Loop</h2>
     <div class="pipeline">
-      <div class="step you"><div class="label">You</div><div class="name">1. Plan</div></div>
+      <div class="step you"><div class="label">You</div><div class="name">1. Plan + contract</div></div>
       <div class="arrow">→</div>
-      <div class="step worker"><div class="label">Worker</div><div class="name">2. Implement</div></div>
+      <div class="step codex"><div class="label">plan-reviewer(s)</div><div class="name">2. Plan review</div></div>
       <div class="arrow">→</div>
-      <div class="step worker"><div class="label">sonnet-worker</div><div class="name">3. Verify</div></div>
+      <div class="step worker"><div class="label">codex-worker</div><div class="name">3. Implement</div></div>
       <div class="arrow">→</div>
-      <div class="step you"><div class="label">You</div><div class="name">4. Self-review</div></div>
+      <div class="step worker"><div class="label">run-gates + verification-engineer</div><div class="name">4. Verify</div></div>
       <div class="arrow">→</div>
-      <div class="step codex"><div class="label">codex-reviewer</div><div class="name">5. Codex review</div></div>
+      <div class="step worker"><div class="label">doc-writer</div><div class="name">5. Docs pass</div></div>
       <div class="arrow">→</div>
-      <div class="step worker"><div class="label">Worker</div><div class="name">6. Fix &amp; loop</div></div>
+      <div class="step codex"><div class="label">correctness + adversarial</div><div class="name">6. Review</div></div>
+      <div class="arrow">→</div>
+      <div class="step you"><div class="label">You</div><div class="name">7. Fix (≤ 2 rounds)</div></div>
     </div>
     <p style="color:#8b949e;font-size:0.82rem;text-align:center">
-      Verification is always a separate agent that did not write the code. Codex runs once, after the entire task is done.
+      The Task Contract's risk level (TRIVIAL → HIGH_RISK) decides which plan and diff reviewers run. The agent that wrote a change never verifies or reviews it.
     </p>
   </section>
 
   <!-- Workers -->
   <section>
-    <h2>External Workers</h2>
+    <h2>Worker Roles</h2>
     <table>
       <thead>
         <tr>
-          <th>#</th>
-          <th>Worker</th>
-          <th>Bin</th>
+          <th>Role</th>
+          <th>Mechanism</th>
           <th>Model</th>
           <th>Provider</th>
-          <th>Persona</th>
-          <th>Role</th>
+          <th>Use it for</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td><code>pi</code></td>
-          <td><code>pi-worker</code></td>
-          <td>deepseek-flash-latest</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
-          <td>✅</td>
-          <td>Implement</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><code>pi-glm</code></td>
-          <td><code>pi-worker</code></td>
-          <td>glm-5.3-flash</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
-          <td>✅</td>
-          <td>Implement</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><code>pi-kimi</code></td>
-          <td><code>pi-worker</code></td>
-          <td>kimi-k3</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
-          <td>✅</td>
-          <td>Implement</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td><code>pi-grok</code></td>
-          <td><code>pi-worker</code></td>
-          <td>grok-4.6</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
-          <td>✅</td>
-          <td>Implement</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td><code>pi-gemini</code></td>
-          <td><code>pi-worker</code></td>
-          <td>gemini-3.8-flash</td>
-          <td><span class="badge badge-blue">openrouter</span></td>
-          <td>✅</td>
-          <td>Implement</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td><code>codex</code></td>
-          <td><code>codex-worker</code></td>
-          <td>gpt-5.6-luna <span class="badge badge-yellow">reasoning: max</span></td>
-          <td><span class="badge badge-yellow">openai</span></td>
-          <td>—</td>
-          <td>Implement</td>
-        </tr>
-        <tr>
-          <td>R</td>
-          <td><code>codex-reviewer</code></td>
-          <td><code>codex-reviewer</code></td>
-          <td>gpt-6-astra <span class="badge badge-yellow">reasoning: high</span></td>
-          <td><span class="badge badge-yellow">openai</span></td>
-          <td>—</td>
-          <td><strong>Final review only</strong></td>
-        </tr>
-        <tr>
-          <td>FB</td>
-          <td><code>sonnet-worker</code></td>
-          <td>subagent</td>
-          <td>Claude Sonnet 4.6</td>
-          <td><span class="badge badge-green">anthropic</span></td>
-          <td>✅</td>
-          <td><strong>Fallback + Verify only</strong></td>
-        </tr>
+        <tr><td><code>coordinator</code></td><td>subagent (loop)</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Plan, assign, judge, git</td></tr>
+        <tr><td><code>primary-implementer</code></td><td><code>codex-worker</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: medium</span></td><td><span class="badge badge-yellow">openai</span></td><td>Code and tests needing design decisions</td></tr>
+        <tr><td><code>mechanical-worker</code></td><td><code>codex-worker</code></td><td>gpt-6-luna <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Repeated edits, config, larger investigations</td></tr>
+        <tr><td><code>research-worker</code></td><td>subagent, read-only</td><td>claude-haiku-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Reading files, logs, command output</td></tr>
+        <tr><td><code>verification-engineer</code></td><td>subagent</td><td>claude-sonnet-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Independent checks, experiments, fallback implementation</td></tr>
+        <tr><td><code>doc-writer</code></td><td>subagent</td><td>claude-haiku-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Comments and repo docs after checks</td></tr>
+        <tr><td><code>plan-reviewer</code></td><td>subagent, read-only</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Plan review (CROSS_CUTTING and above)</td></tr>
+        <tr><td><code>plan-reviewer-secondary</code></td><td><code>codex-reviewer</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Second plan review (ARCHITECTURAL / HIGH_RISK)</td></tr>
+        <tr><td><code>correctness-reviewer</code></td><td><code>codex-reviewer</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: medium</span></td><td><span class="badge badge-yellow">openai</span></td><td>Diff review, every task</td></tr>
+        <tr><td><code>adversarial-reviewer</code></td><td>subagent, read-only</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Concrete failure modes (risky changes)</td></tr>
+        <tr><td><code>contrarian</code></td><td>subagent, read-only</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Challenge the diagnosis before a re-plan</td></tr>
       </tbody>
     </table>
     <p style="color:#8b949e;font-size:0.82rem;margin-top:0.6rem">
-      Cold-start: round-robin until each worker has ≥ 5 samples.
-      After cold-start: pick highest pass rate ≥ 70%. Fallback on any permission escalation.
+      Authoritative role → model mapping: <code>.claude/config/worker-map.json</code>. If Codex is unavailable, <code>verification-engineer</code> implements as the fallback.
     </p>
   </section>
 
@@ -279,7 +217,7 @@
       <div class="rule-card">
         <div class="icon">🔬</div>
         <h3>Verify is always independent</h3>
-        <p>The agent that wrote the code never verifies it. <code>sonnet-worker</code> always does Verify.</p>
+        <p>The agent that wrote the code never verifies or reviews it. <code>run-gates</code> and <code>verification-engineer</code> check it.</p>
       </div>
       <div class="rule-card">
         <div class="icon">📋</div>
@@ -303,8 +241,8 @@
       </div>
       <div class="rule-card">
         <div class="icon">🔭</div>
-        <h3>Codex last, once</h3>
-        <p>Codex reviews the final diff after all briefs are done and self-reviewed. Never mid-task.</p>
+        <h3>Two review rounds, max</h3>
+        <p>Reviewers see the finished, documented diff. If round 2 finds fix-induced defects, <code>contrarian</code> challenges the diagnosis and you re-plan with the user.</p>
       </div>
       <div class="rule-card">
         <div class="icon">⚡</div>
@@ -314,59 +252,19 @@
     </div>
   </section>
 
-  <!-- Specialist agents -->
+  <!-- Personas -->
   <section>
-    <h2>35+ Specialist Subagents</h2>
-    <h3>Spawnable Subagents</h3>
+    <h2>Personas</h2>
+    <p style="color:#8b949e;font-size:0.82rem">Domain guidance passed to <code>codex-worker</code> as its third argument, or read by <code>verification-engineer</code> for fallback work. The coordinator also folds their quality rules into review prompts.</p>
     <div class="agents-grid">
-      <div class="agent-chip"><span>🏗️</span> architect-reviewer</div>
-      <div class="agent-chip"><span>🔙</span> backend-developer</div>
-      <div class="agent-chip"><span>🏗️</span> build-engineer</div>
-      <div class="agent-chip"><span>✅</span> ci-validator</div>
-      <div class="agent-chip"><span>💻</span> cli-developer</div>
-      <div class="agent-chip"><span>☁️</span> cloud-architect</div>
-      <div class="agent-chip"><span>🔍</span> code-reviewer</div>
-      <div class="agent-chip"><span>🤖</span> coordinator</div>
-      <div class="agent-chip"><span>🗄️</span> database-administrator</div>
-      <div class="agent-chip"><span>🐛</span> debugger</div>
-      <div class="agent-chip"><span>📦</span> dependency-manager</div>
-      <div class="agent-chip"><span>🚀</span> deployment-engineer</div>
-      <div class="agent-chip"><span>⚙️</span> devops-engineer</div>
-      <div class="agent-chip"><span>📝</span> documentation-engineer</div>
-      <div class="agent-chip"><span>🔌</span> embedded-systems</div>
-      <div class="agent-chip"><span>🔍</span> Explore</div>
-      <div class="agent-chip"><span>🖥️</span> frontend-developer</div>
-      <div class="agent-chip"><span>🔀</span> fullstack-developer</div>
-      <div class="agent-chip"><span>🔀</span> git-workflow-manager</div>
-      <div class="agent-chip"><span>📊</span> graphql-architect</div>
-      <div class="agent-chip"><span>🚨</span> incident-responder</div>
-      <div class="agent-chip"><span>☸️</span> kubernetes-specialist</div>
-      <div class="agent-chip"><span>🔌</span> mcp-developer</div>
-      <div class="agent-chip"><span>🏗️</span> microservices-architect</div>
-      <div class="agent-chip"><span>🌐</span> network-engineer</div>
-      <div class="agent-chip"><span>⚡</span> performance-engineer</div>
-      <div class="agent-chip"><span>📐</span> Plan</div>
-      <div class="agent-chip"><span>🏗️</span> platform-engineer</div>
-      <div class="agent-chip"><span>♻️</span> refactoring-specialist</div>
-      <div class="agent-chip"><span>🔒</span> security-engineer</div>
-      <div class="agent-chip"><span>🛠️</span> sonnet-worker</div>
-      <div class="agent-chip"><span>📊</span> sre-engineer</div>
-      <div class="agent-chip"><span>🏃</span> test-runner</div>
-      <div class="agent-chip"><span>🏗️</span> terraform-engineer</div>
-      <div class="agent-chip"><span>🔧</span> tooling-engineer</div>
-      <div class="agent-chip"><span>🎨</span> ui-designer</div>
-      <div class="agent-chip"><span>🔌</span> websocket-engineer</div>
-    </div>
-    <h3>Language Personas (inject via pi-worker)</h3>
-    <div class="agents-grid">
-      <div class="agent-chip"><span>🐍</span> django-developer</div>
-      <div class="agent-chip"><span>🐹</span> golang-pro</div>
-      <div class="agent-chip"><span>📱</span> mobile-developer</div>
       <div class="agent-chip"><span>🐍</span> python-pro</div>
+      <div class="agent-chip"><span>📘</span> typescript-pro</div>
+      <div class="agent-chip"><span>🐹</span> golang-pro</div>
       <div class="agent-chip"><span>🦀</span> rust-engineer</div>
       <div class="agent-chip"><span>🗄️</span> sql-pro</div>
-      <div class="agent-chip"><span>📘</span> typescript-pro</div>
-      <div class="agent-chip"><span>💚</span> vue-expert</div>
+      <div class="agent-chip"><span>🔒</span> security-engineer</div>
+      <div class="agent-chip"><span>🐛</span> debugger</div>
+      <div class="agent-chip"><span>⚡</span> performance-engineer</div>
     </div>
   </section>
 
