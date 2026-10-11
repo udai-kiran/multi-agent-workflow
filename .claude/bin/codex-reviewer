@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# codex-reviewer — mechanism for the correctness-reviewer role (see the
+# correctness-reviewer subagent and .claude/config/worker-map.json, the
+# authoritative role -> model mapping; the default below just mirrors it).
 set -euo pipefail
 
 if [[ $# -ne 1 || -z "$1" ]]; then
@@ -14,21 +17,21 @@ fi
 repo_root="$(git rev-parse --show-toplevel)"
 
 # Write review output into tasks/ at the repo root — the same directory
-# pi-worker and codex-worker use for their reports.
+# codex-worker uses for its reports.
 task_dir="$repo_root/tasks"
 mkdir -p "$task_dir"
 report_file="$(mktemp "$task_dir/codex-review.XXXXXX.md")"
 
 echo "codex review written to: $report_file" >&2
 
-model="${CODEX_REVIEWER_MODEL:-gpt-6-astra}"
-reasoning="${CODEX_REVIEWER_REASONING:-high}"
+model="${CODEX_REVIEWER_MODEL:-gpt-6.1-sol}"
+reasoning="${CODEX_REVIEWER_REASONING:-medium}"
 
 exec codex exec \
     --ephemeral \
-    --dangerously-bypass-approvals-and-sandbox \
+    --sandbox read-only \
     --cd "$repo_root" \
     --model "$model" \
-    --reasoning "$reasoning" \
+    -c "model_reasoning_effort=$reasoning" \
     --output-last-message "$report_file" \
     -- "$1" < /dev/null

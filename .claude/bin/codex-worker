@@ -3,7 +3,7 @@ set -euo pipefail
 
 usage() {
     cat >&2 <<'EOF'
-Usage: codex-worker <report-path> '<task prompt>'
+Usage: codex-worker <report-path> '<task prompt>' [persona-name]
 
   <report-path>  file the implementation report is written to, e.g.
                  tasks/001-short-name/implementation-1.md
@@ -11,26 +11,66 @@ Usage: codex-worker <report-path> '<task prompt>'
                  An existing file is never overwritten: reports are
                  append-only history, so use the next iteration number.
 
+  [persona-name] optional; the basename (no .md) of a file under
+                 .claude/agents/, e.g. 'python-pro'. Its body (YAML
+                 frontmatter stripped) is prepended to the task prompt as
+                 domain guidance. Errors if the file doesn't exist.
+
 Environment:
-  CODEX_WORKER_MODEL     Model to use (default: gpt-5.6-luna)
-  CODEX_WORKER_REASONING Reasoning effort (default: max)
+  CODEX_WORKER_MODEL     Model to use (default: gpt-6.1-sol, the primary-implementer role)
+                         mechanical-worker role: CODEX_WORKER_MODEL=gpt-6-luna
+  CODEX_WORKER_REASONING Reasoning effort (default: medium; use high with gpt-6-luna)
+
+  Role -> model mapping is the authoritative .claude/config/worker-map.json;
+  the defaults above just mirror it so the bin works standalone.
 EOF
 }
 
-if [[ $# -ne 2 || -z "$1" || -z "$2" ]]; then
+if [[ $# -lt 2 || $# -gt 3 || -z "$1" || -z "$2" ]]; then
     usage
     exit 2
 fi
 
 dest="$1"
 prompt="$2"
+persona="${3:-}"
+
+if [[ "$persona" == *"/"* || "$persona" == *".."* ]]; then
+    echo "error: invalid persona name: $persona" >&2
+    exit 2
+fi
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+persona_text=""
+if [[ -n "$persona" ]]; then
+    persona_file="$repo_root/.claude/agents/${persona}.md"
+    if [[ ! -f "$persona_file" ]]; then
+        echo "error: persona file not found: $persona_file" >&2
+        exit 2
+    fi
+    # Strip the leading YAML frontmatter block (--- ... ---), if present.
+    persona_body="$(awk '
+        NR==1 && $0=="---" { infm=1; next }
+        infm && $0=="---" { infm=0; next }
+        infm { next }
+        { print }
+    ' "$persona_file")"
+    persona_text="--- DOMAIN GUIDANCE (from the '$persona' persona, not the requester) ---
+Apply the following specialist's domain expertise and checklists to the task
+below. Where it conflicts with the OUTPUT REQUIREMENTS further down, the
+OUTPUT REQUIREMENTS win — they govern how you report, not what you build.
+
+${persona_body}
+
+--- TASK ---
+"
+fi
 
 if ! command -v codex >/dev/null 2>&1; then
     echo "error: codex CLI not found on PATH" >&2
     exit 127
 fi
-
-repo_root="$(git rev-parse --show-toplevel)"
 
 # Canonicalize a path: use realpath if available, else manual resolution
 canonicalize() {
@@ -111,8 +151,8 @@ trap 'rm -f "$report_file"' EXIT
 
 echo "codex worker target: $dest" >&2
 
-model="${CODEX_WORKER_MODEL:-gpt-5.6-luna}"
-reasoning="${CODEX_WORKER_REASONING:-max}"
+model="${CODEX_WORKER_MODEL:-gpt-6.1-sol}"
+reasoning="${CODEX_WORKER_REASONING:-medium}"
 
 # The worker IS allowed to modify files. The prompt guard ensures the final
 # message is a complete implementation report suitable for coordinator review.
@@ -123,6 +163,17 @@ You are an implementation worker. You MAY create, edit, and delete files as
 needed to accomplish the task. Your implementation report is captured from your
 FINAL MESSAGE only. Emit the complete report, in full, as that final message.
 
+Before writing your final report, self-check any file you created or
+modified with the type checker for that language, and include any errors or
+warnings verbatim in your report — do not silently fix-and-omit them, and do
+not skip this because the task did not mention it:
+- .py file → pyright, from the nearest directory containing a pyproject.toml
+  (e.g. `cd <dir> && uv run pyright <changed files>`).
+- .ts/.tsx file → tsc, from the nearest directory containing a package.json
+  with a "typecheck" script (e.g. `cd <dir> && npx tsc --noEmit`).
+This self-check is a fast first pass; run-gates still re-checks the whole
+workspace afterward.
+
 Your final message MUST include:
 1. A list of every file you created, modified, or deleted
 2. A brief summary of each change and why it was made
@@ -132,16 +183,15 @@ Your final message MUST include:
 Do not truncate the report, do not summarise it, and do not say it has been
 saved anywhere. The full report must appear as your final message.'
 
-_start_seconds=$SECONDS
 codex_status=0
 codex exec \
     --ephemeral \
     --dangerously-bypass-approvals-and-sandbox \
     -m "$model" \
-    --reasoning "$reasoning" \
+    -c "model_reasoning_effort=$reasoning" \
     -C "$repo_root" \
     -o "$report_file" \
-    -- "${prompt}${prompt_guard}" < /dev/null || codex_status=$?
+    -- "${persona_text}${prompt}${prompt_guard}" < /dev/null || codex_status=$?
 
 if [[ ! -s "$report_file" ]]; then
     echo "error: codex produced no report (exit $codex_status); nothing written to $dest" >&2
@@ -165,14 +215,6 @@ if ! cp "$report_file" "$dest"; then
     trap - EXIT
     exit 1
 fi
-
-# Log performance data for worker-stats
-_duration=$(( SECONDS - _start_seconds ))
-_perf_log="$repo_root/tasks/.worker-perf.jsonl"
-mkdir -p "$(dirname "$_perf_log")"
-printf '{"worker":"codex","model":"%s","report":"%s","exit":%d,"duration_s":%d,"ts":"%s"}\n' \
-    "$model" "$dest" "$codex_status" "$_duration" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-    >>"$_perf_log" 2>/dev/null || true
 
 echo "codex worker report written to: $dest" >&2
 exit "$codex_status"

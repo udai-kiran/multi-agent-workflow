@@ -94,9 +94,9 @@ echo ""
 # ── copy agent definitions ────────────────────────────────────────────────────
 
 copy_dir ".claude/agents"    ".claude/agents"
-warn "existing installations may have stale moved files in .claude/agents/ (cpp-pro, django-developer, electron-pro, golang-pro, mobile-developer, python-pro, rust-engineer, sql-pro, typescript-pro, vue-expert); remove them manually to avoid confusion"
+warn "existing installations may have stale agents in .claude/agents/ that this template no longer ships (e.g. the old generic specialists, pi-worker, sonnet-worker); remove them manually to avoid confusion"
 
-# Language specialist knowledge for pi-worker injection (not spawnable agents).
+# Language specialist knowledge for codex-worker persona injection (not spawnable agents).
 copy_dir ".claude/personas"  ".claude/personas"
 
 # ── copy bin scripts ──────────────────────────────────────────────────────────
