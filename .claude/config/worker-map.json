@@ -19,26 +19,31 @@
     "alias": "luna"
   },
   "research-worker": {
-    "provider": "anthropic",
-    "model": "claude-haiku-5-5",
-    "mechanism": "subagent, read-only"
+    "provider": "google-antigravity",
+    "model": null,
+    "mechanism": "agy-worker bin; research-worker brief; optional AGY_WORKER_EFFORT",
+    "model_env": "AGY_WORKER_MODEL",
+    "effort_env": "AGY_WORKER_EFFORT"
   },
   "verification-engineer": {
-    "provider": "anthropic",
-    "model": "claude-sonnet-5-5",
-    "mechanism": "subagent, permissionMode: acceptEdits"
+    "provider": "google-antigravity",
+    "model": null,
+    "mechanism": "agy-worker bin; verification-engineer brief; optional AGY_WORKER_EFFORT",
+    "model_env": "AGY_WORKER_MODEL",
+    "effort_env": "AGY_WORKER_EFFORT"
   },
   "plan-reviewer": {
-    "provider": "anthropic",
-    "model": "claude-opus-5-5",
-    "mechanism": "subagent, read-only"
-  },
-  "plan-reviewer-secondary": {
     "provider": "openai",
     "model": "gpt-6.1-sol",
     "reasoning": "high",
-    "mechanism": "codex-reviewer bin (CODEX_REVIEWER_REASONING=high), read-only sandbox",
-    "alias": "sol-plan-review"
+    "mechanism": "codex-reviewer bin (CODEX_REVIEWER_REASONING=high), read-only sandbox"
+  },
+  "plan-reviewer-secondary": {
+    "provider": "openai",
+    "model": "gpt-6-luna",
+    "reasoning": "high",
+    "mechanism": "codex-reviewer bin (CODEX_REVIEWER_MODEL=gpt-6-luna CODEX_REVIEWER_REASONING=high), read-only sandbox",
+    "alias": "luna-plan-review"
   },
   "correctness-reviewer": {
     "provider": "openai",
@@ -48,18 +53,29 @@
     "alias": "codex-reviewer"
   },
   "adversarial-reviewer": {
-    "provider": "anthropic",
-    "model": "claude-opus-5-5",
-    "mechanism": "subagent, read-only"
+    "provider": "openai",
+    "model": "gpt-6.1-sol",
+    "reasoning": "high",
+    "mechanism": "codex-reviewer bin (CODEX_REVIEWER_REASONING=high), read-only sandbox"
   },
   "contrarian": {
-    "provider": "anthropic",
-    "model": "claude-opus-5-5",
-    "mechanism": "subagent, read-only, re-plan only"
+    "provider": "openai",
+    "model": "gpt-6.1-sol",
+    "reasoning": "high",
+    "mechanism": "codex-reviewer bin (CODEX_REVIEWER_REASONING=high), read-only sandbox, re-plan only"
   },
   "doc-writer": {
-    "provider": "anthropic",
-    "model": "claude-haiku-5-5",
-    "mechanism": "subagent, permissionMode: acceptEdits, comments and docs only"
+    "provider": "google-antigravity",
+    "model": null,
+    "mechanism": "agy-worker bin; doc-writer brief; optional AGY_WORKER_EFFORT",
+    "model_env": "AGY_WORKER_MODEL",
+    "effort_env": "AGY_WORKER_EFFORT"
+  },
+  "agy-implementer": {
+    "provider": "google-antigravity",
+    "model": null,
+    "mechanism": "agy-worker bin; fallback or disjoint implementation brief",
+    "model_env": "AGY_WORKER_MODEL",
+    "effort_env": "AGY_WORKER_EFFORT"
   }
 }

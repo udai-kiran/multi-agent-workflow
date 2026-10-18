@@ -94,7 +94,7 @@ echo ""
 # ── copy agent definitions ────────────────────────────────────────────────────
 
 copy_dir ".claude/agents"    ".claude/agents"
-warn "existing installations may have stale agents in .claude/agents/ that this template no longer ships (e.g. the old generic specialists, pi-worker, sonnet-worker); remove them manually to avoid confusion"
+warn "existing installations may have stale agents in .claude/agents/ that this template no longer ships (e.g. the old generic specialists, pi-worker, sonnet-worker, or persona files such as python-pro.md that now live in .claude/personas/); remove them manually to avoid confusion"
 
 # Language specialist knowledge for codex-worker persona injection (not spawnable agents).
 copy_dir ".claude/personas"  ".claude/personas"

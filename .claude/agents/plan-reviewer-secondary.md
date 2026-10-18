@@ -13,7 +13,7 @@ and finding format to both reviewers.
 Pass the prompt unchanged. Run once with Bash timeout set to 600000 milliseconds:
 
 ```bash
-CODEX_REVIEWER_REASONING=high "$(git rev-parse --show-toplevel)/.claude/bin/codex-reviewer" '<review task prompt>'
+CODEX_REVIEWER_MODEL=gpt-6-luna CODEX_REVIEWER_REASONING=high "$(git rev-parse --show-toplevel)/.claude/bin/codex-reviewer" '<review task prompt>'
 ```
 
 - Exit 0: read the path printed after "codex review written to:". Return the

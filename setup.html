@@ -189,19 +189,20 @@
       <tbody>
         <tr><td><code>coordinator</code></td><td>subagent (loop)</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Plan, assign, judge, git</td></tr>
         <tr><td><code>primary-implementer</code></td><td><code>codex-worker</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: medium</span></td><td><span class="badge badge-yellow">openai</span></td><td>Code and tests needing design decisions</td></tr>
+        <tr><td><code>agy-implementer</code></td><td><code>agy-worker</code></td><td>agy default</td><td><span class="badge badge-blue">google</span></td><td>Fallback or disjoint implementation</td></tr>
         <tr><td><code>mechanical-worker</code></td><td><code>codex-worker</code></td><td>gpt-6-luna <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Repeated edits, config, larger investigations</td></tr>
-        <tr><td><code>research-worker</code></td><td>subagent, read-only</td><td>claude-haiku-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Reading files, logs, command output</td></tr>
-        <tr><td><code>verification-engineer</code></td><td>subagent</td><td>claude-sonnet-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Independent checks, experiments, fallback implementation</td></tr>
-        <tr><td><code>doc-writer</code></td><td>subagent</td><td>claude-haiku-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Comments and repo docs after checks</td></tr>
-        <tr><td><code>plan-reviewer</code></td><td>subagent, read-only</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Plan review (CROSS_CUTTING and above)</td></tr>
-        <tr><td><code>plan-reviewer-secondary</code></td><td><code>codex-reviewer</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Second plan review (ARCHITECTURAL / HIGH_RISK)</td></tr>
+        <tr><td><code>research-worker</code></td><td><code>agy-worker</code></td><td>agy default</td><td><span class="badge badge-blue">google</span></td><td>Reading files, logs, command output</td></tr>
+        <tr><td><code>verification-engineer</code></td><td><code>agy-worker</code></td><td>agy default</td><td><span class="badge badge-blue">google</span></td><td>Independent checks and experiments</td></tr>
+        <tr><td><code>doc-writer</code></td><td><code>agy-worker</code></td><td>agy default</td><td><span class="badge badge-blue">google</span></td><td>Comments and repo docs after checks</td></tr>
+        <tr><td><code>plan-reviewer</code></td><td><code>codex-reviewer</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Plan review (CROSS_CUTTING and above)</td></tr>
+        <tr><td><code>plan-reviewer-secondary</code></td><td><code>codex-reviewer</code></td><td>gpt-6-luna <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Second plan review (ARCHITECTURAL / HIGH_RISK)</td></tr>
         <tr><td><code>correctness-reviewer</code></td><td><code>codex-reviewer</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: medium</span></td><td><span class="badge badge-yellow">openai</span></td><td>Diff review, every task</td></tr>
-        <tr><td><code>adversarial-reviewer</code></td><td>subagent, read-only</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Concrete failure modes (risky changes)</td></tr>
-        <tr><td><code>contrarian</code></td><td>subagent, read-only</td><td>claude-opus-5-5</td><td><span class="badge badge-green">anthropic</span></td><td>Challenge the diagnosis before a re-plan</td></tr>
+        <tr><td><code>adversarial-reviewer</code></td><td><code>codex-reviewer</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Concrete failure modes (risky changes)</td></tr>
+        <tr><td><code>contrarian</code></td><td><code>codex-reviewer</code></td><td>gpt-6.1-sol <span class="badge badge-yellow">reasoning: high</span></td><td><span class="badge badge-yellow">openai</span></td><td>Challenge the diagnosis before a re-plan</td></tr>
       </tbody>
     </table>
     <p style="color:#8b949e;font-size:0.82rem;margin-top:0.6rem">
-      Authoritative role → model mapping: <code>.claude/config/worker-map.json</code>. If Codex is unavailable, <code>verification-engineer</code> implements as the fallback.
+      Authoritative role → model mapping: <code>.claude/config/worker-map.json</code>. If Codex is unavailable, <code>agy-implementer</code> implements as the fallback. Haiku transport agents only relay to the Codex / agy CLIs.
     </p>
   </section>
 
@@ -217,7 +218,7 @@
       <div class="rule-card">
         <div class="icon">🔬</div>
         <h3>Verify is always independent</h3>
-        <p>The agent that wrote the code never verifies or reviews it. <code>run-gates</code> and <code>verification-engineer</code> check it.</p>
+        <p>The agent that wrote the code never verifies or reviews it. Codex checks agy's work and vice versa; <code>run-gates</code> always runs.</p>
       </div>
       <div class="rule-card">
         <div class="icon">📋</div>
@@ -255,7 +256,7 @@
   <!-- Personas -->
   <section>
     <h2>Personas</h2>
-    <p style="color:#8b949e;font-size:0.82rem">Domain guidance passed to <code>codex-worker</code> as its third argument, or read by <code>verification-engineer</code> for fallback work. The coordinator also folds their quality rules into review prompts.</p>
+    <p style="color:#8b949e;font-size:0.82rem">Domain guidance passed to <code>codex-worker</code> as its third argument, or to <code>agy-worker</code> for fallback work. They live in <code>.claude/personas/</code>, so Claude Code does not register them as subagents. The coordinator also folds their quality rules into review prompts.</p>
     <div class="agents-grid">
       <div class="agent-chip"><span>🐍</span> python-pro</div>
       <div class="agent-chip"><span>📘</span> typescript-pro</div>

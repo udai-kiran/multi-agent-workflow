@@ -9,6 +9,7 @@
 #
 # Required binaries:
 #   codex → codex-worker and codex-reviewer (OpenAI Codex CLI)
+#   agy → agy-worker (Google Antigravity CLI)
 #   rg  → Claude Code Grep tool backend (ripgrep)
 #   fd  → Claude Code Glob tool backend (fd-find)
 set -euo pipefail
@@ -44,6 +45,9 @@ echo ""
 check_bin "codex" "codex-worker / codex-reviewer: runs 'codex exec …'" ||
   ((missing_required++)) || true
 
+check_bin "agy" "agy-worker: runs 'agy --print …'" ||
+  ((missing_required++)) || true
+
 check_bin "rg" "Claude Code Grep tool backend (ripgrep)" ||
   ((missing_required++)) || true
 
@@ -61,6 +65,7 @@ else
   echo "" >&2
   echo "Install hints:" >&2
   echo "  codex — npm install -g @openai/codex" >&2
+  echo "  agy   — install the Google Antigravity CLI" >&2
   echo "  rg    — https://github.com/BurntSushi/ripgrep#installation" >&2
   echo "  fd    — https://github.com/sharkdp/fd#installation" >&2
   exit 1
