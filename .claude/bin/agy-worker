@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Run an Antigravity worker and capture its response for the Opus coordinator.
+set -euo pipefail
+
+usage() {
+    echo "Usage: agy-worker <report-path> '<task prompt>' [persona-name]" >&2
+    echo "Persona guidance: .claude/personas/<persona-name>.md (frontmatter stripped)" >&2
+    echo "Optional overrides: AGY_WORKER_MODEL, AGY_WORKER_EFFORT" >&2
+}
+if [[ ${1:-} == --help || ${1:-} == -h ]]; then usage; exit 0; fi
+if [[ $# -lt 2 || $# -gt 3 || -z "$1" || -z "$2" ]]; then usage; exit 2; fi
+dest="$1"; prompt="$2"; persona="${3:-}"
+if [[ "$persona" == *"/"* || "$persona" == *".."* ]]; then
+    echo "error: invalid persona name: $persona" >&2
+    exit 2
+fi
+for cli in agy python3 git; do
+    command -v "$cli" >/dev/null 2>&1 || { echo "error: $cli not found on PATH" >&2; exit 127; }
+done
+repo_root="$(git rev-parse --show-toplevel)"
+[[ "$dest" == /* ]] || dest="$repo_root/$dest"
+if [[ -e "$dest" || -L "$dest" ]]; then
+    echo "error: report path already exists: $dest; use the next iteration number" >&2
+    exit 1
+fi
+if [[ -n "$persona" ]]; then
+    persona_file="$repo_root/.claude/personas/$persona.md"
+    [[ -f "$persona_file" ]] || { echo "error: persona file not found: $persona_file" >&2; exit 2; }
+    persona_body="$(awk 'NR==1 && $0=="---" { fm=1; next } fm && $0=="---" { fm=0; next } !fm { print }' "$persona_file")"
+    prompt="Domain guidance (subordinate to the Task Contract and worker rules):
+$persona_body
+
+Task:
+$prompt"
+fi
+prompt="You are an agy worker for the Claude Code Opus 5.5 coordinator.
+Read AGENTS.md and GEMINI.md if present. Follow the supplied Task Contract and file ownership.
+You share this checkout; preserve others' edits. Do not delegate or call another
+coding CLI. Research, review, and verification briefs must not modify source.
+Do not stage, commit, push, deploy, or change live systems unless explicitly assigned.
+Return your complete report as the final response; do not write the report file.
+Include changed files (or none), commands and captured results, exit codes, test
+counts, assumptions, and unresolved issues. Explicitly report every permission
+denial or check you could not run. Exit success alone does not prove completion.
+
+$prompt"
+mkdir -p -- "$(dirname -- "$dest")"
+capture="$(mktemp -d /tmp/agy-worker.XXXXXX)"
+args=(--print "$prompt" --output-format json)
+[[ -z ${AGY_WORKER_MODEL:-} ]] || args+=(--model "$AGY_WORKER_MODEL")
+[[ -z ${AGY_WORKER_EFFORT:-} ]] || args+=(--effort "$AGY_WORKER_EFFORT")
+echo "agy worker target: $dest" >&2
+status=0
+(cd "$repo_root" && agy "${args[@]}" < /dev/null) >"$capture/result.json" 2>"$capture/stderr.txt" || status=$?
+/bin/cat "$capture/stderr.txt" >&2
+# Validate the terminal status even when the CLI exits zero. Exclusive creation
+# preserves an existing report, including one created during the model call.
+parsed=0
+python3 - "$capture" "$dest" "$status" <<'PY' || parsed=$?
+import json
+from pathlib import Path
+import sys
+
+capture, dest, code = Path(sys.argv[1]), Path(sys.argv[2]), int(sys.argv[3])
+try:
+    result = json.loads((capture / 'result.json').read_text())
+    response = result.get('response')
+    terminal = result.get('status')
+    if not isinstance(response, str) or not response.strip():
+        raise ValueError(f'no worker response (status={terminal!r})')
+    with dest.open('x') as report:
+        report.write(f'# agy worker report\n\nCLI exit: {code}\nTerminal status: {terminal}\n\n')
+        report.write(response + '\n')
+        diagnostics = (capture / 'stderr.txt').read_text()
+        if diagnostics:
+            report.write('\n## CLI diagnostics (check for denied tools)\n\n' + diagnostics)
+    if code != 0 or terminal != 'SUCCESS':
+        raise ValueError(f'worker did not complete (exit={code}, status={terminal!r}); report is partial')
+except (OSError, ValueError, AttributeError) as error:
+    print(f'error: {error}', file=sys.stderr)
+    sys.exit(1)
+PY
+if [[ $status -ne 0 || $parsed -ne 0 ]]; then
+    echo "error: agy worker failed; capture kept at: $capture; inspect any partial report at: $dest" >&2
+    [[ $status -ne 0 ]] || status=1
+    exit "$status"
+fi
+rm -rf -- "$capture"
+echo "agy worker report written to: $dest" >&2

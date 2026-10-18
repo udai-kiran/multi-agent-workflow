@@ -12,7 +12,7 @@ Usage: codex-worker <report-path> '<task prompt>' [persona-name]
                  append-only history, so use the next iteration number.
 
   [persona-name] optional; the basename (no .md) of a file under
-                 .claude/agents/, e.g. 'python-pro'. Its body (YAML
+                 .claude/personas/, e.g. 'python-pro'. Its body (YAML
                  frontmatter stripped) is prepended to the task prompt as
                  domain guidance. Errors if the file doesn't exist.
 
@@ -44,7 +44,7 @@ repo_root="$(git rev-parse --show-toplevel)"
 
 persona_text=""
 if [[ -n "$persona" ]]; then
-    persona_file="$repo_root/.claude/agents/${persona}.md"
+    persona_file="$repo_root/.claude/personas/${persona}.md"
     if [[ ! -f "$persona_file" ]]; then
         echo "error: persona file not found: $persona_file" >&2
         exit 2
